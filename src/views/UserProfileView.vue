@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { getUser } from '../data/store.js'
+import { t } from '../i18n/index.js'
 
 const route = useRoute()
 const user = computed(() => getUser(route.params.id))
@@ -13,9 +14,9 @@ const user = computed(() => getUser(route.params.id))
     <h1>{{ user.name }}</h1>
     <span class="username">@{{ user.username }}</span>
     <p v-if="user.bio" class="bio">{{ user.bio }}</p>
-    <p v-else class="bio empty">No bio yet.</p>
+    <p v-else class="bio empty">{{ t('user.noBio') }}</p>
   </section>
-  <p v-else class="not-found">User not found.</p>
+  <p v-else class="not-found">{{ t('user.notFound') }}</p>
 </template>
 
 <style scoped>

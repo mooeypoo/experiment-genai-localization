@@ -1,6 +1,8 @@
 <script setup>
 import NavBar from './NavBar.vue'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 import { getUsers, currentUser, setCurrentUser, getDisplayName } from '../data/store.js'
+import { t } from '../i18n/index.js'
 
 const users = getUsers()
 
@@ -11,17 +13,20 @@ function onUserChange(event) {
 
 <template>
   <header class="app-header">
-    <span class="brand">Social Demo</span>
+    <span class="brand">{{ t('header.brand') }}</span>
     <NavBar />
-    <div class="viewing-as">
-      <label>
-        Viewing as
-        <select :value="currentUser?.id" @change="onUserChange">
-          <option v-for="user in users" :key="user.id" :value="user.id">
-            {{ getDisplayName(user.id) }}
-          </option>
-        </select>
-      </label>
+    <div class="header-controls">
+      <div class="viewing-as">
+        <label>
+          {{ t('header.viewingAs') }}
+          <select :value="currentUser?.id" @change="onUserChange">
+            <option v-for="user in users" :key="user.id" :value="user.id">
+              {{ getDisplayName(user.id) }}
+            </option>
+          </select>
+        </label>
+      </div>
+      <LanguageSwitcher />
     </div>
   </header>
 </template>
@@ -41,8 +46,11 @@ function onUserChange(event) {
   color: #222;
 }
 
-.viewing-as {
+.header-controls {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .viewing-as label {

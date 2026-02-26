@@ -1,5 +1,6 @@
 <script setup>
 import { getUsers } from '../data/store.js'
+import { t } from '../i18n/index.js'
 import UserCard from '../components/UserCard.vue'
 import CreateUserForm from '../components/CreateUserForm.vue'
 
@@ -8,7 +9,7 @@ const users = getUsers()
 
 <template>
   <section class="users-view">
-    <h1>Users</h1>
+    <h1>{{ t('users.title') }}</h1>
     <div class="user-grid">
       <UserCard v-for="user in users" :key="user.id" :user="user" />
     </div>

@@ -1,11 +1,12 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import { t } from '../i18n/index.js'
 </script>
 
 <template>
   <nav class="nav-bar">
-    <RouterLink to="/post/post-1">Post</RouterLink>
-    <RouterLink to="/users">Users</RouterLink>
+    <RouterLink to="/post/post-1">{{ t('nav.post') }}</RouterLink>
+    <RouterLink to="/users">{{ t('nav.users') }}</RouterLink>
   </nav>
 </template>
 

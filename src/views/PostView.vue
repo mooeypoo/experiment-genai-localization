@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { getPost, getComments, getUser } from '../data/store.js'
+import { t, locale } from '../i18n/index.js'
 import CommentList from '../components/CommentList.vue'
 import CommentForm from '../components/CommentForm.vue'
 
@@ -25,7 +26,7 @@ const comments = computed(() => getComments(postId.value))
         />
         <span v-if="author" class="author-name">{{ author.name }}</span>
         <time :datetime="post.createdAt">{{
-          new Date(post.createdAt).toLocaleDateString()
+          new Date(post.createdAt).toLocaleDateString(locale)
         }}</time>
       </div>
       <p class="post-body">{{ post.body }}</p>
@@ -33,11 +34,11 @@ const comments = computed(() => getComments(postId.value))
 
     <hr />
 
-    <h2>Comments ({{ comments.length }})</h2>
+    <h2>{{ t('post.commentsCount', { count: comments.length }) }}</h2>
     <CommentList :comments="comments" />
     <CommentForm :post-id="postId" />
   </section>
-  <p v-else class="not-found">Post not found.</p>
+  <p v-else class="not-found">{{ t('post.notFound') }}</p>
 </template>
 
 <style scoped>

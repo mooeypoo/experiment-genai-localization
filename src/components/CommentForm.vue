@@ -1,20 +1,21 @@
 <script setup>
 import { ref } from 'vue'
-import { currentUser, getDisplayName, createComment } from '../data/store.js'
+import { currentUser, getDisplayName, createComment, BIO_MAX_LENGTH } from '../data/store.js'
+import { t } from '../i18n/index.js'
 
 const props = defineProps({
   postId: { type: String, required: true },
 })
 
 const body = ref('')
-const errors = ref([])
+const errorKeys = ref([])
 
 function submit() {
   const result = createComment({
     postId: props.postId,
     body: body.value,
   })
-  errors.value = result.errors
+  errorKeys.value = result.errors
   if (result.comment) {
     body.value = ''
   }
@@ -23,18 +24,18 @@ function submit() {
 
 <template>
   <form class="comment-form" @submit.prevent="submit">
-    <h3>Add a comment</h3>
+    <h3>{{ t('comment.addTitle') }}</h3>
     <p v-if="currentUser" class="posting-as">
-      Posting as <strong>{{ getDisplayName(currentUser.id) }}</strong>
+      {{ t('comment.postingAs') }} <strong>{{ getDisplayName(currentUser.id) }}</strong>
     </p>
-    <ul v-if="errors.length" class="error-list">
-      <li v-for="(err, i) in errors" :key="i">{{ err }}</li>
+    <ul v-if="errorKeys.length" class="error-list">
+      <li v-for="(key, i) in errorKeys" :key="i">{{ t(key) }}</li>
     </ul>
     <label>
-      Comment
-      <textarea v-model="body" rows="3" placeholder="Write something..." />
+      {{ t('comment.label') }}
+      <textarea v-model="body" rows="3" :placeholder="t('comment.placeholder')" />
     </label>
-    <button type="submit">Post comment</button>
+    <button type="submit">{{ t('comment.submit') }}</button>
   </form>
 </template>
 
