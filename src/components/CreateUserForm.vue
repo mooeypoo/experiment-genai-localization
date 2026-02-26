@@ -96,7 +96,7 @@ function submit() {
 
 .char-counter {
   display: block;
-  text-align: right;
+  text-align: end;
   font-size: 0.8rem;
   color: #999;
   margin-top: 0.2rem;

@@ -45,6 +45,9 @@ export default {
     en: 'English',
     fr: 'Français',
     es: 'Español',
+    he: 'עברית',
+    ar: 'العربية',
+    fa: 'فارسی',
     label: 'Idioma',
   },
 }

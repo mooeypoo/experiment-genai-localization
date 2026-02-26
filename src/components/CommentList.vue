@@ -47,7 +47,7 @@ defineProps({
 
 .comment-header time {
   color: #999;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 .avatar {

@@ -47,7 +47,7 @@ function onUserChange(event) {
 }
 
 .header-controls {
-  margin-left: auto;
+  margin-inline-start: auto;
   display: flex;
   align-items: center;
   gap: 1.5rem;
