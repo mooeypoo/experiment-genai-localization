@@ -1,37 +1,35 @@
 <script setup>
 import { ref } from 'vue'
-import { getUsers, createComment } from '../data/store.js'
+import { currentUser, createComment } from '../data/store.js'
 
 const props = defineProps({
   postId: { type: String, required: true },
 })
 
-const users = getUsers()
-const authorId = ref(users[0]?.id ?? '')
 const body = ref('')
+const errors = ref([])
 
 function submit() {
-  if (!body.value.trim() || !authorId.value) return
-  createComment({
+  const result = createComment({
     postId: props.postId,
-    authorId: authorId.value,
-    body: body.value.trim(),
+    body: body.value,
   })
-  body.value = ''
+  errors.value = result.errors
+  if (result.comment) {
+    body.value = ''
+  }
 }
 </script>
 
 <template>
   <form class="comment-form" @submit.prevent="submit">
     <h3>Add a comment</h3>
-    <label>
-      Author
-      <select v-model="authorId">
-        <option v-for="user in users" :key="user.id" :value="user.id">
-          {{ user.name }}
-        </option>
-      </select>
-    </label>
+    <p v-if="currentUser" class="posting-as">
+      Posting as <strong>{{ currentUser.name }}</strong>
+    </p>
+    <ul v-if="errors.length" class="error-list">
+      <li v-for="(err, i) in errors" :key="i">{{ err }}</li>
+    </ul>
     <label>
       Comment
       <textarea v-model="body" rows="3" placeholder="Write something..." />
@@ -49,6 +47,23 @@ function submit() {
   margin-bottom: 0.75rem;
 }
 
+.posting-as {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.75rem;
+}
+
+.error-list {
+  list-style: none;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+  background: #fff0f0;
+  border: 1px solid #e8c0c0;
+  border-radius: 4px;
+  color: #b33;
+  font-size: 0.9rem;
+}
+
 .comment-form label {
   display: block;
   margin-bottom: 0.75rem;
@@ -56,7 +71,6 @@ function submit() {
   color: #555;
 }
 
-.comment-form select,
 .comment-form textarea {
   display: block;
   width: 100%;

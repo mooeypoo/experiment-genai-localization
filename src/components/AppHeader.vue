@@ -1,11 +1,28 @@
 <script setup>
 import NavBar from './NavBar.vue'
+import { getUsers, currentUser, setCurrentUser } from '../data/store.js'
+
+const users = getUsers()
+
+function onUserChange(event) {
+  setCurrentUser(event.target.value)
+}
 </script>
 
 <template>
   <header class="app-header">
     <span class="brand">Social Demo</span>
     <NavBar />
+    <div class="viewing-as">
+      <label>
+        Viewing as
+        <select :value="currentUser?.id" @change="onUserChange">
+          <option v-for="user in users" :key="user.id" :value="user.id">
+            {{ user.name }}
+          </option>
+        </select>
+      </label>
+    </div>
   </header>
 </template>
 
@@ -22,5 +39,25 @@ import NavBar from './NavBar.vue'
   font-weight: 700;
   font-size: 1.1rem;
   color: #222;
+}
+
+.viewing-as {
+  margin-left: auto;
+}
+
+.viewing-as label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.viewing-as select {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
 }
 </style>

@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import seedData from './seed.json'
 
 function freshState() {
@@ -6,6 +6,17 @@ function freshState() {
 }
 
 const state = reactive(freshState())
+
+const currentUserId = ref(state.users[0]?.id ?? null)
+
+export const currentUser = computed(() =>
+  state.users.find((u) => u.id === currentUserId.value) ?? null
+)
+
+export function setCurrentUser(id) {
+  if (!state.users.find((u) => u.id === id)) return
+  currentUserId.value = id
+}
 
 let nextId = 1000
 
@@ -41,14 +52,28 @@ export function createUser({ name, username, bio = '' }) {
   return user
 }
 
-export function createComment({ postId, authorId, body }) {
+export function createComment({ postId, body }) {
+  const errors = []
+
+  if (!currentUserId.value) {
+    errors.push('No user selected.')
+  }
+  if (!body || !body.trim()) {
+    errors.push('Comment cannot be empty.')
+  }
+  if (postId && !state.posts.find((p) => p.id === postId)) {
+    errors.push('Post not found.')
+  }
+
+  if (errors.length) return { comment: null, errors }
+
   const comment = {
     id: uid('comment'),
     postId,
-    authorId,
-    body,
+    authorId: currentUserId.value,
+    body: body.trim(),
     createdAt: new Date().toISOString(),
   }
   state.comments.push(comment)
-  return comment
+  return { comment, errors: [] }
 }
