@@ -32,6 +32,12 @@ export function getUser(id) {
   return state.users.find((u) => u.id === id) ?? null
 }
 
+export function getDisplayName(userId) {
+  const user = state.users.find((u) => u.id === userId)
+  if (!user) return 'Unknown'
+  return user.preferredName || user.name
+}
+
 export function getPost(id) {
   return state.posts.find((p) => p.id === id) ?? null
 }
@@ -48,7 +54,7 @@ function slugify(str) {
     .replace(/^-|-$/g, '')
 }
 
-export function createUser({ name, bio = '' }) {
+export function createUser({ name, bio = '', preferredName = '' }) {
   const errors = []
 
   if (!name || !name.trim()) {
@@ -71,6 +77,7 @@ export function createUser({ name, bio = '' }) {
     username,
     avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${encodeURIComponent(username)}`,
     bio: bio.trim(),
+    preferredName: preferredName.trim(),
   }
   state.users.push(user)
   return { user, errors: [] }

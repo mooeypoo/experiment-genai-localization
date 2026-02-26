@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { currentUser, createComment } from '../data/store.js'
+import { currentUser, getDisplayName, createComment } from '../data/store.js'
 
 const props = defineProps({
   postId: { type: String, required: true },
@@ -25,7 +25,7 @@ function submit() {
   <form class="comment-form" @submit.prevent="submit">
     <h3>Add a comment</h3>
     <p v-if="currentUser" class="posting-as">
-      Posting as <strong>{{ currentUser.name }}</strong>
+      Posting as <strong>{{ getDisplayName(currentUser.id) }}</strong>
     </p>
     <ul v-if="errors.length" class="error-list">
       <li v-for="(err, i) in errors" :key="i">{{ err }}</li>

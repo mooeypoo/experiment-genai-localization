@@ -3,17 +3,20 @@ import { ref } from 'vue'
 import { createUser } from '../data/store.js'
 
 const name = ref('')
+const preferredName = ref('')
 const bio = ref('')
 const errors = ref([])
 
 function submit() {
   const result = createUser({
     name: name.value,
+    preferredName: preferredName.value,
     bio: bio.value,
   })
   errors.value = result.errors
   if (result.user) {
     name.value = ''
+    preferredName.value = ''
     bio.value = ''
   }
 }
@@ -28,6 +31,10 @@ function submit() {
     <label>
       Display name
       <input v-model="name" type="text" placeholder="Full name" />
+    </label>
+    <label>
+      Preferred name
+      <input v-model="preferredName" type="text" placeholder="How should we refer to you? (optional)" />
     </label>
     <label>
       Bio

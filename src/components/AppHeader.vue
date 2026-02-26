@@ -1,6 +1,6 @@
 <script setup>
 import NavBar from './NavBar.vue'
-import { getUsers, currentUser, setCurrentUser } from '../data/store.js'
+import { getUsers, currentUser, setCurrentUser, getDisplayName } from '../data/store.js'
 
 const users = getUsers()
 
@@ -18,7 +18,7 @@ function onUserChange(event) {
         Viewing as
         <select :value="currentUser?.id" @change="onUserChange">
           <option v-for="user in users" :key="user.id" :value="user.id">
-            {{ user.name }}
+            {{ getDisplayName(user.id) }}
           </option>
         </select>
       </label>
