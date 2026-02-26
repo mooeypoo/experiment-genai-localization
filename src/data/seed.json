@@ -4,25 +4,29 @@
       "id": "user-1",
       "name": "Alice Martin",
       "username": "alice",
-      "avatar": "https://api.dicebear.com/9.x/thumbs/svg?seed=alice"
+      "avatar": "https://api.dicebear.com/9.x/thumbs/svg?seed=alice",
+      "bio": "Frontend developer and open-source enthusiast. Loves building small tools that solve big problems."
     },
     {
       "id": "user-2",
       "name": "Bob Chen",
       "username": "bob",
-      "avatar": "https://api.dicebear.com/9.x/thumbs/svg?seed=bob"
+      "avatar": "https://api.dicebear.com/9.x/thumbs/svg?seed=bob",
+      "bio": "Full-stack engineer by day, hobby baker by night. Currently learning Rust."
     },
     {
       "id": "user-3",
       "name": "Carol Diaz",
       "username": "carol",
-      "avatar": "https://api.dicebear.com/9.x/thumbs/svg?seed=carol"
+      "avatar": "https://api.dicebear.com/9.x/thumbs/svg?seed=carol",
+      "bio": "UX researcher turned developer. Passionate about accessible design and clean code."
     },
     {
       "id": "user-4",
       "name": "Dan Okafor",
       "username": "dan",
-      "avatar": "https://api.dicebear.com/9.x/thumbs/svg?seed=dan"
+      "avatar": "https://api.dicebear.com/9.x/thumbs/svg?seed=dan",
+      "bio": "DevOps specialist who automates everything. If it can be scripted, it should be."
     }
   ],
   "posts": [

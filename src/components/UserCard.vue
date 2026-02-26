@@ -1,15 +1,17 @@
 <script setup>
+import { RouterLink } from 'vue-router'
+
 defineProps({
   user: { type: Object, required: true },
 })
 </script>
 
 <template>
-  <div class="user-card">
+  <RouterLink :to="{ name: 'user-profile', params: { id: user.id } }" class="user-card">
     <img :src="user.avatar" :alt="user.name" class="avatar" />
     <strong>{{ user.name }}</strong>
     <span class="username">@{{ user.username }}</span>
-  </div>
+  </RouterLink>
 </template>
 
 <style scoped>
@@ -22,6 +24,14 @@ defineProps({
   border: 1px solid #e8e8e8;
   border-radius: 8px;
   background: #fafafa;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.user-card:hover {
+  border-color: #4a90d9;
+  box-shadow: 0 2px 8px rgba(74, 144, 217, 0.12);
 }
 
 .avatar {

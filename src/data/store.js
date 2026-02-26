@@ -29,12 +29,13 @@ export function getComments(postId) {
   return state.comments.filter((c) => c.postId === postId)
 }
 
-export function createUser({ name, username }) {
+export function createUser({ name, username, bio = '' }) {
   const user = {
     id: uid('user'),
     name,
     username,
     avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${encodeURIComponent(username)}`,
+    bio,
   }
   state.users.push(user)
   return user
