@@ -18,6 +18,8 @@ export function setCurrentUser(id) {
   currentUserId.value = id
 }
 
+export const BIO_MAX_LENGTH = 160
+
 let nextId = 1000
 
 function uid(prefix) {
@@ -59,6 +61,9 @@ export function createUser({ name, bio = '', preferredName = '' }) {
 
   if (!name || !name.trim()) {
     errors.push('Display name is required.')
+  }
+  if (bio && bio.trim().length > BIO_MAX_LENGTH) {
+    errors.push(`Bio must be ${BIO_MAX_LENGTH} characters or fewer.`)
   }
 
   if (errors.length) return { user: null, errors }

@@ -1,11 +1,14 @@
 <script setup>
-import { ref } from 'vue'
-import { createUser } from '../data/store.js'
+import { ref, computed } from 'vue'
+import { createUser, BIO_MAX_LENGTH } from '../data/store.js'
 
 const name = ref('')
 const preferredName = ref('')
 const bio = ref('')
 const errors = ref([])
+
+const bioLength = computed(() => bio.value.length)
+const bioOver = computed(() => bioLength.value > BIO_MAX_LENGTH)
 
 function submit() {
   const result = createUser({
@@ -38,7 +41,10 @@ function submit() {
     </label>
     <label>
       Bio
-      <textarea v-model="bio" rows="2" placeholder="A short bio (optional)" />
+      <textarea v-model="bio" rows="2" placeholder="A short bio (optional)" :class="{ over: bioOver }" />
+      <span class="char-counter" :class="{ over: bioOver }">
+        {{ bioLength }} / {{ BIO_MAX_LENGTH }}
+      </span>
     </label>
     <button type="submit">Create user</button>
   </form>
@@ -81,6 +87,23 @@ function submit() {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: inherit;
+}
+
+.create-user-form textarea.over {
+  border-color: #c44;
+}
+
+.char-counter {
+  display: block;
+  text-align: right;
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 0.2rem;
+}
+
+.char-counter.over {
+  color: #c44;
+  font-weight: 600;
 }
 
 .create-user-form button {
