@@ -3,29 +3,35 @@ import { ref } from 'vue'
 import { createUser } from '../data/store.js'
 
 const name = ref('')
-const username = ref('')
+const bio = ref('')
+const errors = ref([])
 
 function submit() {
-  if (!name.value.trim() || !username.value.trim()) return
-  createUser({
-    name: name.value.trim(),
-    username: username.value.trim(),
+  const result = createUser({
+    name: name.value,
+    bio: bio.value,
   })
-  name.value = ''
-  username.value = ''
+  errors.value = result.errors
+  if (result.user) {
+    name.value = ''
+    bio.value = ''
+  }
 }
 </script>
 
 <template>
   <form class="create-user-form" @submit.prevent="submit">
     <h3>Add a user</h3>
+    <ul v-if="errors.length" class="error-list">
+      <li v-for="(err, i) in errors" :key="i">{{ err }}</li>
+    </ul>
     <label>
-      Name
+      Display name
       <input v-model="name" type="text" placeholder="Full name" />
     </label>
     <label>
-      Username
-      <input v-model="username" type="text" placeholder="username" />
+      Bio
+      <textarea v-model="bio" rows="2" placeholder="A short bio (optional)" />
     </label>
     <button type="submit">Create user</button>
   </form>
@@ -40,6 +46,17 @@ function submit() {
   margin-bottom: 0.75rem;
 }
 
+.error-list {
+  list-style: none;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.75rem;
+  background: #fff0f0;
+  border: 1px solid #e8c0c0;
+  border-radius: 4px;
+  color: #b33;
+  font-size: 0.9rem;
+}
+
 .create-user-form label {
   display: block;
   margin-bottom: 0.75rem;
@@ -47,7 +64,8 @@ function submit() {
   color: #555;
 }
 
-.create-user-form input {
+.create-user-form input,
+.create-user-form textarea {
   display: block;
   width: 100%;
   margin-top: 0.25rem;

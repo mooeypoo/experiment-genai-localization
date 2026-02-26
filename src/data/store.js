@@ -40,16 +40,40 @@ export function getComments(postId) {
   return state.comments.filter((c) => c.postId === postId)
 }
 
-export function createUser({ name, username, bio = '' }) {
+function slugify(str) {
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+export function createUser({ name, bio = '' }) {
+  const errors = []
+
+  if (!name || !name.trim()) {
+    errors.push('Display name is required.')
+  }
+
+  if (errors.length) return { user: null, errors }
+
+  const trimmedName = name.trim()
+  const base = slugify(trimmedName)
+  let username = base
+  let suffix = 2
+  while (state.users.some((u) => u.username === username)) {
+    username = `${base}-${suffix++}`
+  }
+
   const user = {
     id: uid('user'),
-    name,
+    name: trimmedName,
     username,
     avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${encodeURIComponent(username)}`,
-    bio,
+    bio: bio.trim(),
   }
   state.users.push(user)
-  return user
+  return { user, errors: [] }
 }
 
 export function createComment({ postId, body }) {
