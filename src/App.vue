@@ -1,15 +1,11 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
+import AppHeader from './components/AppHeader.vue'
 </script>
 
 <template>
   <div id="shell">
-    <header>
-      <nav>
-        <RouterLink to="/post/post-1">Post</RouterLink>
-        <RouterLink to="/users">Users</RouterLink>
-      </nav>
-    </header>
+    <AppHeader />
     <main>
       <RouterView />
     </main>
@@ -36,28 +32,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-header {
-  border-bottom: 1px solid #e8e8e8;
-  padding: 0.75rem 1.5rem;
-}
-
-nav {
-  display: flex;
-  gap: 1.5rem;
-}
-
-nav a {
-  text-decoration: none;
-  color: #555;
-  font-weight: 500;
-  padding-bottom: 2px;
-}
-
-nav a.router-link-active {
-  color: #4a90d9;
-  border-bottom: 2px solid #4a90d9;
 }
 
 main {
