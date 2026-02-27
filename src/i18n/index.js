@@ -5,10 +5,11 @@ import es from './locales/es.js'
 import he from './locales/he.js'
 import ar from './locales/ar.js'
 import fa from './locales/fa.js'
+import zh from './locales/zh.js'
 
-const messages = { en, fr, es, he, ar, fa }
+const messages = { en, fr, es, he, ar, fa, zh }
 
-export const SUPPORTED_LOCALES = ['en', 'fr', 'es', 'he', 'ar', 'fa']
+export const SUPPORTED_LOCALES = ['en', 'fr', 'es', 'he', 'ar', 'fa', 'zh']
 
 const RTL_LOCALES = new Set(['he', 'ar', 'fa'])
 
