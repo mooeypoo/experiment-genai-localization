@@ -1,12 +1,12 @@
 # experiment-genai-steps
 
-A small social-style demo application built with Vue 3 and Vite, developed
-incrementally across multiple steps driven by an AI coding agent.
+A small GenAI incremental localization experiment built with Vue 3 and Vite,
+developed across multiple steps driven by an AI coding agent.
 
-The app itself is intentionally minimal: a single post with comments and a
-list of users. All data lives in memory and resets on page refresh. The
-repository is an experiment in observing how AI-assisted development evolves
-a codebase over many guided steps.
+The app itself is intentionally minimal: a single social-style post with
+comments and a list of users. All data lives in memory and resets on page
+refresh. The repository is an experiment in observing how AI-assisted
+development evolves a codebase over many guided steps.
 
 ---
 

@@ -61,14 +61,14 @@ writeFileSync(
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Social Demo Viewer</title>
+  <title>GenAI Incremental Localization Experiment</title>
   <link rel="stylesheet" href="./shell/shell.css" />
 </head>
 <body class="page-layout">
 
   <header class="page-header">
     <div class="page-header-inner">
-      <span class="page-brand">Social Demo Viewer</span>
+      <span class="page-brand">GenAI Incremental Localization Experiment</span>
       <nav class="page-nav">
         <a href="./about/">About</a>
       </nav>
@@ -93,8 +93,12 @@ writeFileSync(
   </main>
 
   <footer class="page-footer">
-    <a href="https://github.com/${repoName}" class="footer-link" target="_blank" rel="noopener">
+    <a href="https://github.com/mooeypoo/experiment-genai-localization" class="footer-link" target="_blank" rel="noopener">
       View on GitHub
+    </a>
+    <span class="footer-separator">·</span>
+    <a href="https://moriel.tech" class="footer-link" target="_blank" rel="noopener">
+      Made by Moriel Schottlender (mooeypoo)
     </a>
   </footer>
 
@@ -115,7 +119,7 @@ writeFileSync(
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About — Social Demo Viewer</title>
+  <title>About — GenAI Incremental Localization Experiment</title>
   <link rel="stylesheet" href="../shell/shell.css" />
 </head>
 <body class="page-layout">
@@ -129,7 +133,7 @@ writeFileSync(
         </svg>
         All steps
       </a>
-      <span class="page-brand">Social Demo Viewer</span>
+      <span class="page-brand">GenAI Incremental Localization Experiment</span>
       <nav class="page-nav">
         <a href="../about/" aria-current="page">About</a>
       </nav>
@@ -141,7 +145,7 @@ writeFileSync(
 
     <p>
       This is a static demo viewer for an AI-assisted coding experiment. A Vue 3
-      social demo app was built incrementally across ${stepsData.length} steps, each driven by
+      app was built incrementally across ${stepsData.length} steps, each driven by
       a prompt given to an AI coding agent. The agent's reasoning for each step is
       recorded in the <em>agent notes</em>.
     </p>
@@ -184,15 +188,26 @@ writeFileSync(
 
     <h2>Source</h2>
     <p>
-      <a href="https://github.com/${repoName}" target="_blank" rel="noopener">
-        github.com/${repoName}
+      <a href="https://github.com/mooeypoo/experiment-genai-localization" target="_blank" rel="noopener">
+        github.com/mooeypoo/experiment-genai-localization
       </a>
+      <br />
+      <span>
+        Made by
+        <a href="https://moriel.tech" target="_blank" rel="noopener">
+          Moriel Schottlender (mooeypoo)
+        </a>
+      </span>
     </p>
   </main>
 
   <footer class="page-footer">
-    <a href="https://github.com/${repoName}" class="footer-link" target="_blank" rel="noopener">
+    <a href="https://github.com/mooeypoo/experiment-genai-localization" class="footer-link" target="_blank" rel="noopener">
       View on GitHub
+    </a>
+    <span class="footer-separator">·</span>
+    <a href="https://moriel.tech" class="footer-link" target="_blank" rel="noopener">
+      Made by Moriel Schottlender (mooeypoo)
     </a>
   </footer>
 
@@ -223,7 +238,7 @@ for (const { id, number, label } of stepsData) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${label} — Social Demo Viewer</title>
+  <title>${label} — GenAI Incremental Localization Experiment</title>
   <link rel="stylesheet" href="../shell/shell.css" />
 </head>
 <body class="shell-layout" data-step="${id}">
@@ -240,7 +255,7 @@ for (const { id, number, label } of stepsData) {
             stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
-      <span class="shell-brand" aria-hidden="true">Social Demo</span>
+      <span class="shell-brand" aria-hidden="true">GenAI Incremental Localization Experiment</span>
     </div>
 
     <div class="shell-topbar-center">
