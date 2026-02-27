@@ -1,0 +1,142 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # ─── Build ────────────────────────────────────────────────────────────────
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history + tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install app dependencies (shared across step builds)
+        run: npm ci
+
+      - name: Install script dependencies
+        run: npm ci --prefix scripts
+
+      - name: Discover step tags
+        id: discover
+        run: |
+          # Collect all step-* tags in version-sorted order
+          STEPS=$(git tag -l 'step-*' | sort -V | tr '\n' ' ' | xargs)
+          echo "steps=$STEPS" >> "$GITHUB_OUTPUT"
+          echo "Discovered steps: $STEPS"
+
+      - name: Prepare output directory and copy shell assets
+        run: |
+          mkdir -p _site/shell _site/about
+          cp shell/shell.css _site/shell/shell.css
+          cp shell/shell.js  _site/shell/shell.js
+
+      # ── Build each step tag ──────────────────────────────────────────────
+      - name: Build step apps
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+          STEPS: ${{ steps.discover.outputs.steps }}
+        run: |
+          WORKSPACE="$(pwd)"
+
+          for TAG in $STEPS; do
+            echo ""
+            echo "════════════════════════════════════════"
+            echo "  Building $TAG"
+            echo "════════════════════════════════════════"
+            STEP_NUM="${TAG#step-}"
+
+            # ── Checkout tag into a git worktree ──────────────────────────
+            git worktree add "/tmp/wt-${TAG}" "$TAG"
+
+            # Symlink main checkout's node_modules so we skip per-step installs.
+            # All steps share the same dependency versions, so this is safe.
+            ln -sf "${WORKSPACE}/node_modules" "/tmp/wt-${TAG}/node_modules"
+
+            # ── Build the Vue app with the correct base path ──────────────
+            # The app will be served at /<repo>/step-XX/app/
+            BASE="/${REPO_NAME}/${TAG}/app/"
+            mkdir -p "_site/${TAG}/app"
+
+            (
+              cd "/tmp/wt-${TAG}"
+              npx vite build --base="${BASE}" --outDir="${WORKSPACE}/_site/${TAG}/app"
+            )
+
+            # ── Render agent notes → notes.html ───────────────────────────
+            NOTES_DEST="_site/${TAG}/notes.html"
+            # Notes are stored as docs/agent-notes/XX.md in every step tag
+            NOTES_SRC="/tmp/wt-${TAG}/docs/agent-notes/${STEP_NUM}.md"
+            if [ -f "$NOTES_SRC" ]; then
+              node scripts/render-md.mjs "$NOTES_SRC" > "$NOTES_DEST"
+              echo "  ✓ Rendered notes"
+            else
+              printf '<p class="prose-missing">No agent notes found for %s.</p>' "$TAG" > "$NOTES_DEST"
+              echo "  ⚠ No notes found at $NOTES_SRC"
+            fi
+
+            # ── Render prompt → prompt.html ───────────────────────────────
+            PROMPT_DEST="_site/${TAG}/prompt.html"
+            # Try docs/prompts/step-XX.md first (new convention), then XX.md (existing)
+            PROMPT_SRC_A="/tmp/wt-${TAG}/docs/prompts/step-${STEP_NUM}.md"
+            PROMPT_SRC_B="/tmp/wt-${TAG}/docs/prompts/${STEP_NUM}.md"
+            if [ -f "$PROMPT_SRC_A" ]; then
+              node scripts/render-md.mjs "$PROMPT_SRC_A" > "$PROMPT_DEST"
+              echo "  ✓ Rendered prompt (step-XX.md)"
+            elif [ -f "$PROMPT_SRC_B" ]; then
+              node scripts/render-md.mjs "$PROMPT_SRC_B" > "$PROMPT_DEST"
+              echo "  ✓ Rendered prompt (XX.md)"
+            else
+              printf '<p class="prose-missing">No prompt file found for %s.</p>' "$TAG" > "$PROMPT_DEST"
+              echo "  ⚠ No prompt found for $TAG"
+            fi
+
+            # ── Clean up worktree ─────────────────────────────────────────
+            git worktree remove "/tmp/wt-${TAG}" --force
+
+          done
+
+      # ── Generate global pages (index, about, steps.json, step shells) ───
+      - name: Generate global site pages
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+          STEPS: ${{ steps.discover.outputs.steps }}
+        run: |
+          node scripts/generate-site.mjs "$STEPS" "$REPO_NAME" _site
+
+      # ── Upload ────────────────────────────────────────────────────────────
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  # ─── Deploy ───────────────────────────────────────────────────────────────
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

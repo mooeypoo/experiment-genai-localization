@@ -1,0 +1,10 @@
+{
+  "name": "site-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Build scripts for the GitHub Pages viewer site",
+  "dependencies": {
+    "marked": "^15.0.0"
+  }
+}
