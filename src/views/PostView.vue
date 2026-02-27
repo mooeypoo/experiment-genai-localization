@@ -11,6 +11,18 @@ const postId = computed(() => route.params.id)
 const post = computed(() => getPost(postId.value))
 const author = computed(() => (post.value ? getUser(post.value.authorId) : null))
 const comments = computed(() => getComments(postId.value))
+
+const commentsHeading = computed(() => {
+  const count = comments.value.length
+  const formattedCount = formatNumber(count)
+  if (count === 0) {
+    return t('post.comments.none')
+  }
+  if (count === 1) {
+    return t('post.comments.one', { count: formattedCount })
+  }
+  return t('post.comments.many', { count: formattedCount })
+})
 </script>
 
 <template>
@@ -32,7 +44,7 @@ const comments = computed(() => getComments(postId.value))
 
     <hr />
 
-    <h2>{{ t('post.commentsCount', { count: formatNumber(comments.length) }) }}</h2>
+    <h2>{{ commentsHeading }}</h2>
     <CommentList :comments="comments" />
     <CommentForm :post-id="postId" />
   </section>

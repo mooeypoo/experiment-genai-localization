@@ -8,6 +8,11 @@ export default {
     users: 'کاربران',
   },
   post: {
+    comments: {
+      none: 'هنوز دیدگاهی ثبت نشده است',
+      one: '{count} دیدگاه',
+      many: '{count} دیدگاه',
+    },
     commentsCount: 'نظرات ({count})',
     notFound: 'پست یافت نشد.',
   },

@@ -8,6 +8,11 @@ export default {
     users: 'المستخدمون',
   },
   post: {
+    comments: {
+      none: 'لا توجد تعليقات بعد',
+      one: 'تعليق واحد',
+      many: '{count} تعليقات',
+    },
     commentsCount: 'التعليقات ({count})',
     notFound: 'المنشور غير موجود.',
   },

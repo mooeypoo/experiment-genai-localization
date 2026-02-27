@@ -8,6 +8,11 @@ export default {
     users: 'Usuarios',
   },
   post: {
+    comments: {
+      none: 'Todavía no hay comentarios',
+      one: '{count} comentario',
+      many: '{count} comentarios',
+    },
     commentsCount: 'Comentarios ({count})',
     notFound: 'Publicación no encontrada.',
   },

@@ -8,6 +8,11 @@ export default {
     users: 'Users',
   },
   post: {
+    comments: {
+      none: 'No comments yet',
+      one: '{count} comment',
+      many: '{count} comments',
+    },
     commentsCount: 'Comments ({count})',
     notFound: 'Post not found.',
   },

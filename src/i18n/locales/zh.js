@@ -8,6 +8,11 @@ export default {
     users: '用户',
   },
   post: {
+    comments: {
+      none: '暂时还没有评论',
+      one: '{count} 条评论',
+      many: '{count} 条评论',
+    },
     commentsCount: '评论（{count}）',
     notFound: '未找到帖子。',
   },

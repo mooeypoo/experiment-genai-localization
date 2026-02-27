@@ -8,6 +8,11 @@ export default {
     users: 'משתמשים',
   },
   post: {
+    comments: {
+      none: 'אין תגובות עדיין',
+      one: 'תגובה אחת',
+      many: '{count} תגובות',
+    },
     commentsCount: 'תגובות ({count})',
     notFound: 'הפוסט לא נמצא.',
   },
