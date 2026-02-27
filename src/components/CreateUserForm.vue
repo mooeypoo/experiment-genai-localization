@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { createUser, BIO_MAX_LENGTH } from '../data/store.js'
-import { t } from '../i18n/index.js'
+import { t, formatNumber } from '../i18n/index.js'
 
 const name = ref('')
 const preferredName = ref('')
@@ -30,7 +30,7 @@ function submit() {
   <form class="create-user-form" @submit.prevent="submit">
     <h3>{{ t('user.addTitle') }}</h3>
     <ul v-if="errorKeys.length" class="error-list">
-      <li v-for="(key, i) in errorKeys" :key="i">{{ t(key, { max: BIO_MAX_LENGTH }) }}</li>
+      <li v-for="(key, i) in errorKeys" :key="i">{{ t(key, { max: formatNumber(BIO_MAX_LENGTH) }) }}</li>
     </ul>
     <label>
       {{ t('user.displayName') }}
@@ -44,7 +44,7 @@ function submit() {
       {{ t('user.bio') }}
       <textarea v-model="bio" rows="2" :placeholder="t('user.bioPlaceholder')" :class="{ over: bioOver }" />
       <span class="char-counter" :class="{ over: bioOver }">
-        {{ bioLength }} / {{ BIO_MAX_LENGTH }}
+        {{ formatNumber(bioLength) }} / {{ formatNumber(BIO_MAX_LENGTH) }}
       </span>
     </label>
     <button type="submit">{{ t('user.createButton') }}</button>

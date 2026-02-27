@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { getPost, getComments, getUser } from '../data/store.js'
-import { t, locale } from '../i18n/index.js'
+import { t, formatDateTime, formatNumber } from '../i18n/index.js'
 import CommentList from '../components/CommentList.vue'
 import CommentForm from '../components/CommentForm.vue'
 
@@ -25,16 +25,14 @@ const comments = computed(() => getComments(postId.value))
           class="avatar"
         />
         <span v-if="author" class="author-name">{{ author.name }}</span>
-        <time :datetime="post.createdAt">{{
-          new Date(post.createdAt).toLocaleDateString(locale)
-        }}</time>
+        <time :datetime="post.createdAt">{{ formatDateTime(post.createdAt) }}</time>
       </div>
       <p class="post-body">{{ post.body }}</p>
     </article>
 
     <hr />
 
-    <h2>{{ t('post.commentsCount', { count: comments.length }) }}</h2>
+    <h2>{{ t('post.commentsCount', { count: formatNumber(comments.length) }) }}</h2>
     <CommentList :comments="comments" />
     <CommentForm :post-id="postId" />
   </section>

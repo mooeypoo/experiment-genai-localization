@@ -1,6 +1,6 @@
 <script setup>
 import { getUser } from '../data/store.js'
-import { t, locale } from '../i18n/index.js'
+import { t, formatDateTime } from '../i18n/index.js'
 
 defineProps({
   comments: { type: Array, required: true },
@@ -17,9 +17,7 @@ defineProps({
           class="avatar"
         />
         <strong>{{ getUser(comment.authorId)?.name ?? t('comment.unknownAuthor') }}</strong>
-        <time :datetime="comment.createdAt">{{
-          new Date(comment.createdAt).toLocaleDateString(locale)
-        }}</time>
+        <time :datetime="comment.createdAt">{{ formatDateTime(comment.createdAt) }}</time>
       </div>
       <p>{{ comment.body }}</p>
     </li>

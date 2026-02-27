@@ -38,6 +38,23 @@ export function t(key, params) {
   return str
 }
 
+export function formatNumber(value) {
+  if (value == null) return ''
+  const numeric = Number(value)
+  if (Number.isNaN(numeric)) return String(value)
+  return new Intl.NumberFormat(locale.value).format(numeric)
+}
+
+export function formatDateTime(value) {
+  if (!value) return ''
+  const date = value instanceof Date ? value : new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  return new Intl.DateTimeFormat(locale.value, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date)
+}
+
 export function setLocale(code) {
   if (SUPPORTED_LOCALES.includes(code)) {
     locale.value = code
