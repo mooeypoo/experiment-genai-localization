@@ -96,14 +96,14 @@ writeFileSync(
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GenAI Incremental Localization Experiment (Cursor/Sonnet)</title>
+  <title>GenAI Incremental Localization Experiment (Cursor / Sonnet)</title>
   <link rel="stylesheet" href="./shell/shell.css" />
 </head>
 <body class="page-layout">
 
   <header class="page-header">
     <div class="page-header-inner">
-      <span class="page-brand">GenAI Incremental Localization Experiment (Cursor/Sonnet)</span>
+      <span class="page-brand">GenAI Incremental Localization Experiment (Cursor / Sonnet)</span>
       <nav class="page-nav">
         <a href="./about/">About</a>
       </nav>
@@ -112,13 +112,64 @@ writeFileSync(
 
   <main class="page-main">
     <section class="page-hero">
-      <h1>Step-by-step Vue 3 demo</h1>
-      <p>
-        Browse an evolving social demo app built incrementally across
-        <strong>${stepsData.length} steps</strong>. Each step is built from
-        a <code>git</code> tag and comes with agent notes and the original prompt.
-      </p>
+      <h1>GenAI Incremental Localization Experiment (Cursor / Sonnet)</h1>
     </section>
+
+    <h2>What This Is</h2>
+    <p>This site documents an incremental software development experiment conducted using an AI coding assistant.</p>
+    <p>The premise is simple:</p>
+    <p>Start with a small, straightforward application.<br />
+    Then, step by step, introduce increasingly realistic localization constraints — new languages, right-to-left scripts, character limits, culturally sensitive phrasing, locale-aware sorting, and formatting rules.</p>
+    <p>At each stage, we observe how the AI adapts.</p>
+    <p>We record:</p>
+    <ul>
+      <li>The exact prompt given to the assistant</li>
+      <li>The code it produced</li>
+      <li>The architectural decisions it made</li>
+      <li>The reasoning it documented</li>
+    </ul>
+    <p>This is not a benchmark and not a competition.</p>
+    <p>It is a process study.</p>
+
+    <h2>Why This Experiment Exists</h2>
+    <p>Modern software is global by default.</p>
+    <p>Yet many applications begin without serious consideration for:</p>
+    <ul>
+      <li>Multilingual users</li>
+      <li>Right-to-left layouts</li>
+      <li>Text expansion and contraction</li>
+      <li>Locale-aware sorting</li>
+      <li>Cultural phrasing differences</li>
+      <li>Formatting conventions</li>
+    </ul>
+    <p>Localization is often treated as a late-stage polish rather than an architectural concern.</p>
+    <p>This experiment asks:</p>
+    <p>What happens when localization pressure is introduced incrementally into an evolving application?</p>
+    <p>How does an AI coding assistant respond when constraints accumulate over time?</p>
+
+    <h2>How to Use This Site</h2>
+    <ol>
+      <li>Choose a step from the selector.</li>
+      <li>Explore the application at that stage.</li>
+      <li>Open the sidebar to read:
+        <ul>
+          <li>The agent&#8217;s notes (what it decided and why)</li>
+          <li>The prompt that produced that stage.</li>
+        </ul>
+      </li>
+      <li>Move forward step by step and observe what changes.</li>
+    </ol>
+    <p>You can jump between stages at any time.</p>
+
+    <h2>Multiple Assistants</h2>
+    <p>This experiment was conducted using more than one AI coding assistant.</p>
+    <p>You can explore both versions:</p>
+    <p>Cursor / Sonnet version:<br />
+    <a href="https://mooeypoo.github.io/experiment-genai-localization/" target="_blank" rel="noopener">https://mooeypoo.github.io/experiment-genai-localization/</a></p>
+    <p>GitHub Copilot version:<br />
+    <a href="https://mooeypoo.github.io/experiment-genai-localization-copilot/" target="_blank" rel="noopener">https://mooeypoo.github.io/experiment-genai-localization-copilot/</a></p>
+    <p>The goal is not to declare a winner.</p>
+    <p>The goal is to observe differences in architectural foresight, ambiguity handling, refactoring behavior, and documentation patterns under evolving localization constraints.</p>
 
     <section class="step-section">
       <h2 class="section-heading">Available steps</h2>
@@ -128,12 +179,8 @@ writeFileSync(
   </main>
 
   <footer class="page-footer">
-    <a href="https://github.com/mooeypoo/experiment-genai-localization" class="footer-link" target="_blank" rel="noopener">
-      View on GitHub
-    </a>
-    <span class="footer-separator">·</span>
     <a href="https://moriel.tech" class="footer-link" target="_blank" rel="noopener">
-      Made by Moriel Schottlender (mooeypoo)
+      Made by Moriel Schottlender
     </a>
   </footer>
 
@@ -154,7 +201,7 @@ writeFileSync(
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About — GenAI Incremental Localization Experiment (Cursor/Sonnet)</title>
+  <title>About — GenAI Incremental Localization Experiment (Cursor / Sonnet)</title>
   <link rel="stylesheet" href="../shell/shell.css" />
 </head>
 <body class="page-layout">
@@ -168,7 +215,7 @@ writeFileSync(
         </svg>
         All steps
       </a>
-      <span class="page-brand">GenAI Incremental Localization Experiment (Cursor/Sonnet)</span>
+      <span class="page-brand">GenAI Incremental Localization Experiment (Cursor / Sonnet)</span>
       <nav class="page-nav">
         <a href="../about/" aria-current="page">About</a>
       </nav>
@@ -176,73 +223,87 @@ writeFileSync(
   </header>
 
   <main class="page-main page-main--narrow">
-    <h1>About this site</h1>
+    <h1>About This Experiment</h1>
 
-    <p>
-      This is a static demo viewer for an AI-assisted coding experiment. A Vue 3
-      app was built incrementally across ${stepsData.length} steps, each driven by
-      a prompt given to an AI coding agent. The agent's reasoning for each step is
-      recorded in the <em>agent notes</em>.
-    </p>
-
-    <h2>How steps are discovered</h2>
-    <p>
-      The GitHub Actions build workflow discovers every <code>git</code> tag
-      matching <code>step-*</code>, checks each tag out into a temporary worktree,
-      builds the Vue app with the correct asset base path, and renders the
-      Markdown docs to HTML. A <code>steps.json</code> manifest at the site root
-      lets the shell populate the step dropdown without hard-coding anything.
-    </p>
-
-    <h2>Where the docs live</h2>
+    <p>The GenAI Incremental Localization Experiment is a structured exploration of how AI coding assistants behave when software requirements evolve incrementally.</p>
+    <p>Rather than asking an assistant to build a fully internationalized system from the start, we follow a more realistic development path:</p>
     <ul>
-      <li>
-        <strong>Agent notes</strong> — <code>docs/agent-notes/XX.md</code> in each
-        step tag. The notes cover decisions, rationale, ambiguities, and tradeoffs.
-      </li>
-      <li>
-        <strong>Prompts</strong> — <code>docs/prompts/XX.md</code> (or
-        <code>docs/prompts/step-XX.md</code>). These are the original instructions
-        given to the agent for that step.
-      </li>
+      <li>Begin with a small monolingual application.</li>
+      <li>Add features normally.</li>
+      <li>Introduce translation requirements later.</li>
+      <li>Add right-to-left languages.</li>
+      <li>Introduce character constraints.</li>
+      <li>Add locale-aware sorting and formatting.</li>
+      <li>Refine natural language phrasing.</li>
+    </ul>
+    <p>At each stage, we observe:</p>
+    <ul>
+      <li>What architectural decisions were made?</li>
+      <li>Did the assistant anticipate future complexity?</li>
+      <li>What had to be refactored?</li>
+      <li>How were ambiguities resolved?</li>
+      <li>What assumptions became visible only under pressure?</li>
     </ul>
 
-    <h2>Shell architecture</h2>
-    <p>
-      The global shell (top bar + sidebar) is a thin static HTML/CSS/JS layer
-      generated once at build time. It wraps each step's Vue app in an
-      <code>&lt;iframe&gt;</code>, keeping the step builds completely isolated.
-      Changing the shell design requires only a push to <code>main</code> —
-      no per-step rebuild needed.
-    </p>
+    <h2>Why Localization?</h2>
+    <p>Localization is one of the most underestimated forces in software architecture.</p>
+    <p>It affects:</p>
+    <ul>
+      <li>Layout and direction</li>
+      <li>Validation rules</li>
+      <li>Data modeling</li>
+      <li>Sorting logic</li>
+      <li>Formatting APIs</li>
+      <li>UX microcopy</li>
+      <li>Accessibility</li>
+    </ul>
+    <p>It is rarely treated as foundational at the start of a project.</p>
+    <p>That makes it an ideal pressure test for incremental AI development.</p>
 
-    <h2>Video walkthrough</h2>
-    <p class="video-placeholder">
-      <em>A video walkthrough will be linked here in a future update.</em>
-    </p>
+    <h2>Why Incremental?</h2>
+    <p>Real software projects do not begin with perfect foresight.</p>
+    <p>They evolve.</p>
+    <p>This experiment mirrors that reality.</p>
+    <p>We intentionally do not warn the assistant in advance that complex localization constraints are coming.</p>
+    <p>The goal is not to trick the AI.</p>
+    <p>The goal is to observe how it reasons and adapts under evolving constraints.</p>
 
-    <h2>Source</h2>
-    <p>
-      <a href="https://github.com/mooeypoo/experiment-genai-localization" target="_blank" rel="noopener">
-        github.com/mooeypoo/experiment-genai-localization
-      </a>
-      <br />
-      <span>
-        Made by
-        <a href="https://moriel.tech" target="_blank" rel="noopener">
-          Moriel Schottlender (mooeypoo)
-        </a>
-      </span>
-    </p>
+    <h2>Multiple Assistants, Same Structure</h2>
+    <p>This experiment was conducted multiple times using different AI coding assistants.</p>
+    <p>Each run follows the same incremental structure and staged prompts.</p>
+    <p>The only variable changed was the assistant.</p>
+    <p>You can explore both versions:</p>
+    <p>Cursor / Sonnet version:<br />
+    <a href="https://mooeypoo.github.io/experiment-genai-localization/" target="_blank" rel="noopener">https://mooeypoo.github.io/experiment-genai-localization/</a></p>
+    <p>GitHub Copilot version:<br />
+    <a href="https://mooeypoo.github.io/experiment-genai-localization-copilot/" target="_blank" rel="noopener">https://mooeypoo.github.io/experiment-genai-localization-copilot/</a></p>
+    <p>This is not about ranking assistants.</p>
+    <p>It is about observing reasoning patterns.</p>
+
+    <h2>How the Site Works</h2>
+    <p>Each stage corresponds to a git tag.</p>
+    <p>For every stage, you can view:</p>
+    <ul>
+      <li>The running application at that point in history.</li>
+      <li>The agent&#8217;s reasoning notes.</li>
+      <li>The exact prompt that produced that stage.</li>
+    </ul>
+    <p>The global shell provides navigation and context.<br />
+    Each step is a historical snapshot.</p>
+
+    <h2>Limitations</h2>
+    <p>This experiment does not claim:</p>
+    <ul>
+      <li>That the resulting applications are production-ready.</li>
+      <li>That localization coverage is complete.</li>
+      <li>That these outcomes represent all possible AI development paths.</li>
+    </ul>
+    <p>It is a structured exploration, not a benchmark.</p>
   </main>
 
   <footer class="page-footer">
-    <a href="https://github.com/mooeypoo/experiment-genai-localization" class="footer-link" target="_blank" rel="noopener">
-      View on GitHub
-    </a>
-    <span class="footer-separator">·</span>
     <a href="https://moriel.tech" class="footer-link" target="_blank" rel="noopener">
-      Made by Moriel Schottlender (mooeypoo)
+      Made by Moriel Schottlender
     </a>
   </footer>
 

@@ -329,3 +329,20 @@ npx serve _site_local
   separate document. The `title` attribute is set to identify the step, but
   full keyboard/AT flow between the shell chrome and the iframe content
   requires explicit focus management that is not implemented.
+
+---
+
+## 9. Content Consolidation Note
+
+The landing page (`index.html`) and About page (`about/index.html`) content
+has been consolidated and standardized across experiments.
+
+Both pages now use the canonical title
+**GenAI Incremental Localization Experiment (Cursor / Sonnet)** and share
+consistent body copy that describes the experiment's purpose, incremental
+methodology, multi-assistant comparison, and how to navigate the site.
+
+The same canonical text is applied to both the generator template
+(`scripts/generate-site.mjs`) and the committed static output (`_site/`).
+Future regeneration of the site via the CI workflow will produce pages
+matching this standardized content.
