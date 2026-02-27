@@ -69,6 +69,32 @@ the shell dropdown is populated from that file at runtime.
    generated.
 8. Everything is deployed via `actions/deploy-pages`.
 
+### Local preview of the Pages shell
+
+You can build the same shell structure locally for review:
+
+```bash
+# From the repo root
+npm run build:pages-local
+
+# Then, in another terminal:
+npx serve _site
+```
+
+This will:
+
+- Discover all `step-*` tags.
+- Build each step's Vue app into `_site/step-XX/app/` with a local-friendly
+  base path (`/step-XX/app/`).
+- Render `notes.html` and `prompt.html` per step.
+- Generate the global index, about page, and step shell wrappers.
+
+Open the URL printed by `serve` (usually `http://localhost:3000`) and browse:
+
+- `/` — global index
+- `/about/` — about page
+- `/step-01/`, `/step-02/`, … — shell + app for each step
+
 ### Enabling GitHub Pages
 
 In your repository settings:

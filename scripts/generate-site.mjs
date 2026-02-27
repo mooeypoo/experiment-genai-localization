@@ -14,7 +14,7 @@
  *   node generate-site.mjs "step-01 step-02 step-12" "experiment-genai-steps" _site
  */
 
-import { writeFileSync, mkdirSync } from 'fs'
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs'
 import { join } from 'path'
 
 const [, , stepsArg = '', repoName = '', outDir = '_site'] = process.argv
@@ -33,7 +33,42 @@ mkdirSync(outDir, { recursive: true })
 
 const stepsData = steps.map((id) => {
   const number = id.replace('step-', '')
-  return { id, number, label: `Step ${number}` }
+  const baseLabel = `Step ${number}`
+
+  let title = ''
+  let short = ''
+
+  try {
+    const notesPath = join(outDir, id, 'notes.html')
+    if (existsSync(notesPath)) {
+      const html = readFileSync(notesPath, 'utf-8')
+      const match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
+      if (match && match[1]) {
+        // Strip any inner tags from the H1 (unlikely, but safe)
+        const rawTitle = match[1].replace(/<[^>]+>/g, '').trim()
+        if (rawTitle) {
+          title = rawTitle
+          // Remove the leading "Step XX —" / "Step XX -" / "Step XX:" prefix if present
+          const prefixRe = new RegExp(`^Step\\s+${number}\\s*[—\\-:\\u2013]?\\s*`, 'i')
+          const stripped = rawTitle.replace(prefixRe, '').trim()
+          short = stripped || rawTitle
+        }
+      }
+    }
+  } catch {
+    // If anything goes wrong reading/parsing notes.html, we just fall back
+    // to the plain "Step XX" label with no short description.
+  }
+
+  const fullLabel = short ? `${baseLabel} — ${short}` : baseLabel
+
+  return {
+    id,
+    number,
+    label: fullLabel,      // used by the shell dropdown + index cards
+    short,                 // short description derived from the H1, if available
+    title: title || fullLabel, // raw H1 text or the full label as a fallback
+  }
 })
 
 writeFileSync(join(outDir, 'steps.json'), JSON.stringify(stepsData, null, 2) + '\n')
