@@ -96,14 +96,14 @@ writeFileSync(
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GenAI Incremental Localization Experiment</title>
+  <title>GenAI Incremental Localization Experiment (Cursor/Sonnet)</title>
   <link rel="stylesheet" href="./shell/shell.css" />
 </head>
 <body class="page-layout">
 
   <header class="page-header">
     <div class="page-header-inner">
-      <span class="page-brand">GenAI Incremental Localization Experiment</span>
+      <span class="page-brand">GenAI Incremental Localization Experiment (Cursor/Sonnet)</span>
       <nav class="page-nav">
         <a href="./about/">About</a>
       </nav>
@@ -154,7 +154,7 @@ writeFileSync(
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About — GenAI Incremental Localization Experiment</title>
+  <title>About — GenAI Incremental Localization Experiment (Cursor/Sonnet)</title>
   <link rel="stylesheet" href="../shell/shell.css" />
 </head>
 <body class="page-layout">
@@ -168,7 +168,7 @@ writeFileSync(
         </svg>
         All steps
       </a>
-      <span class="page-brand">GenAI Incremental Localization Experiment</span>
+      <span class="page-brand">GenAI Incremental Localization Experiment (Cursor/Sonnet)</span>
       <nav class="page-nav">
         <a href="../about/" aria-current="page">About</a>
       </nav>
@@ -273,7 +273,7 @@ for (const { id, number, label } of stepsData) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${label} — GenAI Incremental Localization Experiment</title>
+  <title>${label} — GenAI Incremental Localization Experiment (Cursor/Sonnet)</title>
   <link rel="stylesheet" href="../shell/shell.css" />
 </head>
 <body class="shell-layout" data-step="${id}">
@@ -290,7 +290,7 @@ for (const { id, number, label } of stepsData) {
             stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
-      <span class="shell-brand" aria-hidden="true">GenAI Incremental Localization Experiment</span>
+      <span class="shell-brand" aria-hidden="true">GenAI Incremental Localization Experiment (Cursor/Sonnet)</span>
     </div>
 
     <div class="shell-topbar-center">
