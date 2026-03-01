@@ -15,11 +15,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ─── Build ────────────────────────────────────────────────────────────────
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (full history + tags)
+      - name: Checkout (full history + tags for step discovery)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -30,64 +29,21 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install app dependencies (shared across step builds)
+      - name: Install root dependencies
         run: npm ci
 
-      - name: Discover step tags
-        id: discover
-        run: |
-          # Collect all step-* tags in version-sorted order
-          STEPS=$(git tag -l 'step-*' | sort -V | tr '\n' ' ' | xargs)
-          echo "steps=$STEPS" >> "$GITHUB_OUTPUT"
-          echo "Discovered steps: $STEPS"
+      - name: Install viewer-app dependencies
+        run: npm ci
+        working-directory: viewer/viewer-app
 
-      - name: Prepare output directory
-        run: mkdir -p _site
+      - name: Build pages (viewer app + steps + config)
+        run: npm run build:pages
 
-      # ── Build each step tag ──────────────────────────────────────────────
-      - name: Build step apps
-        env:
-          REPO_NAME: ${{ github.event.repository.name }}
-          STEPS: ${{ steps.discover.outputs.steps }}
-        run: |
-          WORKSPACE="$(pwd)"
-
-          for TAG in $STEPS; do
-            echo ""
-            echo "════════════════════════════════════════"
-            echo "  Building $TAG"
-            echo "════════════════════════════════════════"
-            STEP_NUM="${TAG#step-}"
-
-            # ── Checkout tag into a git worktree ──────────────────────────
-            git worktree add "/tmp/wt-${TAG}" "$TAG"
-
-            # Symlink main checkout's node_modules so we skip per-step installs.
-            # All steps share the same dependency versions, so this is safe.
-            ln -sf "${WORKSPACE}/node_modules" "/tmp/wt-${TAG}/node_modules"
-
-            # ── Build the Vue app with the correct base path ──────────────
-            # The app will be served at /<repo>/step-XX/app/
-            BASE="/${REPO_NAME}/${TAG}/app/"
-            mkdir -p "_site/${TAG}/app"
-
-            (
-              cd "/tmp/wt-${TAG}"
-              npx vite build --base="${BASE}" --outDir="${WORKSPACE}/_site/${TAG}/app"
-            )
-
-            # ── Clean up worktree ─────────────────────────────────────────
-            git worktree remove "/tmp/wt-${TAG}" --force
-
-          done
-
-      # ── Upload ────────────────────────────────────────────────────────────
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: site
 
-  # ─── Deploy ───────────────────────────────────────────────────────────────
   deploy:
     needs: build
     runs-on: ubuntu-latest
