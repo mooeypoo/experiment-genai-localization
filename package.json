@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "build:pages-local": "bash scripts/local-build-pages.sh"
+    "build:pages": "node viewer/scripts/build-pages.mjs",
+    "preview:pages": "npx serve site",
+    "dev:viewer": "npm --prefix viewer/viewer-app run dev"
   },
   "dependencies": {
     "vue": "^3.5",
@@ -15,6 +17,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2",
+    "markdown-it": "^14.1.1",
     "vite": "^6.1"
   }
 }

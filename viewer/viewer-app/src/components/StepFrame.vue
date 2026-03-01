@@ -1,0 +1,56 @@
+<template>
+  <div class="step-frame-wrap">
+    <iframe
+      v-if="src"
+      :key="stepId"
+      :src="src"
+      :title="`Step ${stepId}`"
+      class="step-frame"
+      referrerpolicy="no-referrer"
+    />
+    <div v-else class="step-frame-error">
+      <Message severity="warn" :closable="false">
+        This step is not available. The step artifact may be missing or not yet built.
+      </Message>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue'
+import Message from 'primevue/message'
+
+const props = defineProps({
+  stepId: { type: String, required: true },
+  stepExists: { type: Boolean, default: true },
+})
+
+const src = computed(() => {
+  if (!props.stepId || !props.stepExists) return null
+  return `./${props.stepId}/`
+})
+</script>
+
+<style scoped>
+.step-frame-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--p-surface-50);
+}
+
+.step-frame {
+  flex: 1;
+  width: 100%;
+  min-height: 400px;
+  border: none;
+  display: block;
+}
+
+.step-frame-error {
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+}
+</style>
