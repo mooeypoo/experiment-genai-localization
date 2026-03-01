@@ -9,12 +9,12 @@ import { REPO_ROOT } from './env.js'
 const CONFIG_PATH = join(REPO_ROOT, 'viewer.config.json')
 
 const DEFAULTS = {
-  siteTitle: 'Step Viewer',
+  siteTitle: 'GenAI Incremental Experiment Viewer',
   assistantName: '',
   repoUrl: '',
   otherExperimentUrl: '',
-  footerName: '',
-  footerUrl: '',
+  footerName: 'Moriel Schottlender',
+  footerUrl: 'https://moriel.tech',
   description: '',
 }
 

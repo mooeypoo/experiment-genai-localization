@@ -73,11 +73,13 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useDisplay } from 'vuetify'
 import { state } from '@/lib/state'
 import { normalizeStepId } from '@/lib/stepId'
+import { fetchViewerConfig } from '@/lib/api'
+import { setViewerConfig } from '@/lib/state'
 import DocsPanel from '@/components/DocsPanel.vue'
 
 const route = useRoute()
@@ -93,6 +95,19 @@ const normalizedStepId = computed(() => {
 
 const siteTitle = computed(() => state.viewerConfig?.siteTitle || 'Step Viewer')
 const config = computed(() => state.viewerConfig)
+
+onMounted(async () => {
+  try {
+    const data = await fetchViewerConfig()
+    setViewerConfig(data)
+  } catch {
+    setViewerConfig({})
+  }
+})
+
+watch(siteTitle, (title) => {
+  document.title = title
+}, { immediate: true })
 </script>
 
 <style scoped>
