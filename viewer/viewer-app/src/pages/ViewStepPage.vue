@@ -146,7 +146,7 @@ onMounted(async () => {
 
   .view-step-docs {
     width: 100%;
-    max-height: 50vh;
+    max-height: min(35vh, 35dvh);
     flex-shrink: 0;
     border-radius: 8px;
     border: 1px solid var(--viewer-border);

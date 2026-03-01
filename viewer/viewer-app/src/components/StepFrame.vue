@@ -37,7 +37,11 @@ const src = computed(() => {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  background: var(--p-surface-50);
+  background: #fff;
+  border: 2px solid #64748b;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .step-frame {

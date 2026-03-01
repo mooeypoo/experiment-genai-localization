@@ -3,20 +3,134 @@
     <div v-if="loading" class="about-loading">
       <ProgressSpinner style="width: 40px; height: 40px" />
     </div>
-    <div v-else-if="config" class="about-content viewer-prose">
-      <h1>{{ config.siteTitle || 'About' }}</h1>
-      <p v-if="config.assistantName"><strong>Assistant:</strong> {{ config.assistantName }}</p>
-      <p v-if="config.repoUrl">
-        <a :href="config.repoUrl" target="_blank" rel="noopener">Repository</a>
+    <div v-else class="about-content viewer-prose">
+      <h1>About This Experiment</h1>
+      <p>
+        The GenAI Incremental Localization Experiment is a structured exploration of how AI coding assistants behave when software requirements evolve incrementally.
       </p>
-      <p v-if="config.otherExperimentUrl">
-        <a :href="config.otherExperimentUrl" target="_blank" rel="noopener">Other experiment</a>
+      <p>
+        Rather than asking an assistant to build a fully internationalized system from the start, we follow a more realistic development path:
       </p>
-      <p v-if="config.description">{{ config.description }}</p>
-    </div>
-    <div v-else class="about-content">
-      <h1>About</h1>
-      <p>Viewer configuration not available.</p>
+      <ul>
+        <li>Begin with a small monolingual application.</li>
+        <li>Add features normally.</li>
+        <li>Introduce translation requirements later.</li>
+        <li>Add right-to-left languages.</li>
+        <li>Introduce character constraints.</li>
+        <li>Add locale-aware sorting and formatting.</li>
+        <li>Refine natural language phrasing.</li>
+      </ul>
+      <p>
+        At each stage, we observe:
+      </p>
+      <ul>
+        <li>What architectural decisions were made?</li>
+        <li>Did the assistant anticipate future complexity?</li>
+        <li>What had to be refactored?</li>
+        <li>How were ambiguities resolved?</li>
+        <li>What assumptions became visible only under pressure?</li>
+      </ul>
+
+      <h2>Why Localization?</h2>
+      <p>
+        Localization is one of the most underestimated forces in software architecture.
+      </p>
+      <p>
+        It affects:
+      </p>
+      <ul>
+        <li>Layout and direction</li>
+        <li>Validation rules</li>
+        <li>Data modeling</li>
+        <li>Sorting logic</li>
+        <li>Formatting APIs</li>
+        <li>UX microcopy</li>
+        <li>Accessibility</li>
+      </ul>
+      <p>
+        It is rarely treated as foundational at the start of a project.
+      </p>
+      <p>
+        That makes it an ideal pressure test for incremental AI development.
+      </p>
+
+      <h2>Why Incremental?</h2>
+      <p>
+        Real software projects do not begin with perfect foresight.
+      </p>
+      <p>
+        They evolve.
+      </p>
+      <p>
+        This experiment mirrors that reality.
+      </p>
+      <p>
+        We intentionally do not warn the assistant in advance that complex localization constraints are coming.
+      </p>
+      <p>
+        The goal is not to trick the AI.
+      </p>
+      <p>
+        The goal is to observe how it reasons and adapts under evolving constraints.
+      </p>
+
+      <h2>Multiple Assistants, Same Structure</h2>
+      <p>
+        This experiment was conducted multiple times using different AI coding assistants.
+      </p>
+      <p>
+        Each run follows the same incremental structure and staged prompts.
+      </p>
+      <p>
+        The only variable changed was the assistant.
+      </p>
+      <p>
+        You can explore both versions:
+      </p>
+      <p>
+        Cursor / Sonnet version:<br>
+        <a href="https://mooeypoo.github.io/experiment-genai-localization/" target="_blank" rel="noopener">https://mooeypoo.github.io/experiment-genai-localization/</a>
+      </p>
+      <p>
+        GitHub Copilot version:<br>
+        <a href="https://mooeypoo.github.io/experiment-genai-localization-copilot/" target="_blank" rel="noopener">https://mooeypoo.github.io/experiment-genai-localization-copilot/</a>
+      </p>
+      <p>
+        This is not about ranking assistants.
+      </p>
+      <p>
+        It is about observing reasoning patterns.
+      </p>
+
+      <h2>How the Site Works</h2>
+      <p>
+        Each stage corresponds to a git tag.
+      </p>
+      <p>
+        For every stage, you can view:
+      </p>
+      <ul>
+        <li>The running application at that point in history.</li>
+        <li>The agent's reasoning notes.</li>
+        <li>The exact prompt that produced that stage.</li>
+      </ul>
+      <p>
+        The global shell provides navigation and context.<br>
+        Each step is a historical snapshot.
+      </p>
+
+      <h2>Limitations</h2>
+      <p>
+        This experiment does not claim:
+      </p>
+      <ul>
+        <li>That the resulting applications are production-ready.</li>
+        <li>That localization coverage is complete.</li>
+        <li>That these outcomes represent all possible AI development paths.</li>
+      </ul>
+      <p>
+        It is a structured exploration, not a benchmark.
+      </p>
     </div>
   </div>
 </template>
@@ -28,14 +142,13 @@ import { fetchViewerConfig } from '@/lib/api'
 import { setViewerConfig } from '@/lib/state'
 
 const loading = ref(true)
-const config = ref(null)
 
 onMounted(async () => {
   try {
-    config.value = await fetchViewerConfig()
-    setViewerConfig(config.value)
+    const config = await fetchViewerConfig()
+    setViewerConfig(config)
   } catch {
-    config.value = {}
+    setViewerConfig({})
   } finally {
     loading.value = false
   }
@@ -61,12 +174,12 @@ onMounted(async () => {
   font-size: 1.5rem;
 }
 
-.about-content a {
+.about-content :deep(a) {
   color: var(--p-primary-color);
   text-decoration: none;
 }
 
-.about-content a:hover {
+.about-content :deep(a:hover) {
   text-decoration: underline;
 }
 </style>

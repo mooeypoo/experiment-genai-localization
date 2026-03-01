@@ -1,23 +1,25 @@
 <template>
-  <Panel header="Documentation" class="docs-panel" :toggleable="true" :collapsed="collapsed">
-    <TabView>
-      <TabPanel header="Notes">
-        <div class="viewer-prose" v-html="notesHtml"></div>
-        <p v-if="notesLoading" class="viewer-missing">Loading…</p>
-        <p v-else-if="notesError && !notesHtml" class="viewer-missing">{{ notesFallback }}</p>
-      </TabPanel>
-      <TabPanel header="Prompt">
-        <div class="viewer-prose" v-html="promptHtml"></div>
-        <p v-if="promptLoading" class="viewer-missing">Loading…</p>
-        <p v-else-if="promptError && !promptHtml" class="viewer-missing">{{ promptFallback }}</p>
-      </TabPanel>
-    </TabView>
-  </Panel>
+  <div class="docs-panel">
+    <div class="docs-panel-header">Documentation</div>
+    <div class="docs-panel-scroll">
+      <TabView>
+        <TabPanel header="Notes">
+          <div class="viewer-prose" v-html="notesHtml"></div>
+          <p v-if="notesLoading" class="viewer-missing">Loading…</p>
+          <p v-else-if="notesError && !notesHtml" class="viewer-missing">{{ notesFallback }}</p>
+        </TabPanel>
+        <TabPanel header="Prompt">
+          <div class="viewer-prose" v-html="promptHtml"></div>
+          <p v-if="promptLoading" class="viewer-missing">Loading…</p>
+          <p v-else-if="promptError && !promptHtml" class="viewer-missing">{{ promptFallback }}</p>
+        </TabPanel>
+      </TabView>
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import Panel from 'primevue/panel'
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
 import { fetchStepNotes, fetchStepPrompt } from '@/lib/api'
@@ -34,7 +36,6 @@ const notesLoading = ref(false)
 const promptLoading = ref(false)
 const notesError = ref(null)
 const promptError = ref(null)
-const collapsed = ref(false)
 
 async function loadNotes() {
   notesLoading.value = true
@@ -81,48 +82,37 @@ onMounted(load)
   overflow: hidden;
   background: #f1f5f9;
   color: #1e293b;
+  border: 1px solid var(--viewer-border);
 }
 
-.docs-panel :deep(.p-panel),
-.docs-panel :deep([data-pc-section='root']) {
-  background: #f1f5f9;
-  border-color: var(--viewer-border);
-  color: #1e293b;
-}
-
-.docs-panel :deep(.p-panel-header),
-.docs-panel :deep([data-pc-section='header']) {
+.docs-panel-header {
+  flex-shrink: 0;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 1rem;
   background: #f1f5f9;
   color: #1e293b;
-  border-color: var(--viewer-border);
+  border-bottom: 1px solid var(--viewer-border);
 }
 
-.docs-panel :deep(.p-panel-content),
-.docs-panel :deep([data-pc-section='content']) {
+.docs-panel-scroll {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
-  padding: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background: #f1f5f9;
   color: #1e293b;
-  border: none !important;
-  border-top: none !important;
-  box-shadow: none !important;
 }
 
 .docs-panel :deep(.p-tabview) {
-  height: 100%;
   min-width: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
   background: #f1f5f9;
   color: #1e293b;
 }
 
 .docs-panel :deep(.p-tabview-nav),
 .docs-panel :deep([data-pc-section='nav']) {
+  flex-shrink: 0;
   background: #f1f5f9;
   color: #1e293b;
   border-bottom: 1px solid var(--viewer-border);
@@ -137,14 +127,10 @@ onMounted(load)
 }
 
 .docs-panel :deep(.p-tabview-panels) {
-  flex: 1;
-  min-height: 0;
   min-width: 0;
-  overflow: auto;
   padding: 0;
   background: #f1f5f9;
   color: #1e293b;
-  -webkit-overflow-scrolling: touch;
 }
 
 .docs-panel :deep(.p-tabview-panel) {

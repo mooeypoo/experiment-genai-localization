@@ -19,9 +19,11 @@ import FooterBar from '@/components/FooterBar.vue'
 
 <style scoped>
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .app-main {
@@ -29,7 +31,7 @@ import FooterBar from '@/components/FooterBar.vue'
   display: flex;
   flex-direction: column;
   min-height: 0;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .fade-enter-active,
