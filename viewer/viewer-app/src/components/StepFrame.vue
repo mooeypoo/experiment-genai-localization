@@ -26,7 +26,7 @@ const props = defineProps({
 
 const src = computed(() => {
   if (!props.stepId || !props.stepExists) return null
-  return `./${props.stepId}/`
+  return `./${props.stepId}/index.html`
 })
 </script>
 

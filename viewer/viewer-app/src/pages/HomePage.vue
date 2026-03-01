@@ -112,7 +112,8 @@
 import { computed, onMounted } from 'vue'
 import StepList from '@/components/StepList.vue'
 import { fetchSteps, fetchViewerConfig } from '@/lib/api'
-import { setSteps, setStepsError, setViewerConfig, setViewerConfigError, state } from '@/lib/state'
+import { MOCK_STEPS, DEFAULT_VIEWER_CONFIG } from '@/lib/fallbackData'
+import { setSteps, setStepsError, setViewerConfig, state } from '@/lib/state'
 
 const assistantName = computed(() => state.viewerConfig?.assistantName ?? '…')
 
@@ -121,13 +122,13 @@ onMounted(async () => {
     const data = await fetchSteps()
     setSteps(Array.isArray(data) ? data : (data.steps || []))
   } catch (e) {
-    setStepsError(e)
+    setSteps(MOCK_STEPS)
   }
   try {
     const config = await fetchViewerConfig()
     setViewerConfig(config)
   } catch {
-    setViewerConfig({})
+    setViewerConfig(DEFAULT_VIEWER_CONFIG)
   }
 })
 </script>

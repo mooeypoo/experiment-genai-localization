@@ -138,6 +138,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { fetchViewerConfig } from '@/lib/api'
+import { DEFAULT_VIEWER_CONFIG } from '@/lib/fallbackData'
 import { setViewerConfig } from '@/lib/state'
 
 const loading = ref(true)
@@ -147,7 +148,7 @@ onMounted(async () => {
     const config = await fetchViewerConfig()
     setViewerConfig(config)
   } catch {
-    setViewerConfig({})
+    setViewerConfig(DEFAULT_VIEWER_CONFIG)
   } finally {
     loading.value = false
   }

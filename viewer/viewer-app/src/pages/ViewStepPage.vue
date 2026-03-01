@@ -36,7 +36,8 @@ import StepFrame from '@/components/StepFrame.vue'
 import { normalizeStepId } from '@/lib/stepId'
 import { state } from '@/lib/state'
 import { fetchSteps } from '@/lib/api'
-import { setSteps, setStepsError } from '@/lib/state'
+import { setSteps } from '@/lib/state'
+import { MOCK_STEPS } from '@/lib/fallbackData'
 
 const route = useRoute()
 const router = useRouter()
@@ -59,7 +60,7 @@ function goToStepById(id) {
 async function checkStepExists() {
   if (!normalizedId.value) return
   try {
-    const res = await fetch(`./${normalizedId.value}/`, { method: 'head' })
+    const res = await fetch(`./${normalizedId.value}/index.html`, { method: 'head' })
     stepExists.value = res.ok
   } catch {
     stepExists.value = false
@@ -74,7 +75,7 @@ onMounted(async () => {
       const data = await fetchSteps()
       setSteps(Array.isArray(data) ? data : (data.steps || []))
     } catch (e) {
-      setStepsError(e)
+      setSteps(MOCK_STEPS)
     }
   }
 })

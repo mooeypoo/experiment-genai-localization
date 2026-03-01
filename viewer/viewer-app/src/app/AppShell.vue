@@ -79,6 +79,7 @@ import { useDisplay } from 'vuetify'
 import { state } from '@/lib/state'
 import { normalizeStepId } from '@/lib/stepId'
 import { fetchViewerConfig } from '@/lib/api'
+import { DEFAULT_VIEWER_CONFIG } from '@/lib/fallbackData'
 import { setViewerConfig } from '@/lib/state'
 import DocsPanel from '@/components/DocsPanel.vue'
 
@@ -101,7 +102,7 @@ onMounted(async () => {
     const data = await fetchViewerConfig()
     setViewerConfig(data)
   } catch {
-    setViewerConfig({})
+    setViewerConfig(DEFAULT_VIEWER_CONFIG)
   }
 })
 
