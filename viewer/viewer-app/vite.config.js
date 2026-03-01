@@ -1,19 +1,27 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vuetify from 'vite-plugin-vuetify'
 import { resolve } from 'path'
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue({
+      template: {
+        transformAssetUrls: {
+          vuetify: ['src'],
+        },
+      },
+    }),
+    vuetify({ autoImport: true }),
+  ],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
     },
   },
-  // Base must be relative so deployed under GitHub Pages subpath works
   base: './',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    // When invoked by build-pages.mjs, outDir is overridden via CLI
   },
 })

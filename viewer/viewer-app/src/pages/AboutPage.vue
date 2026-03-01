@@ -1,7 +1,7 @@
 <template>
   <div class="about-page">
     <div v-if="loading" class="about-loading">
-      <ProgressSpinner style="width: 40px; height: 40px" />
+      <v-progress-circular indeterminate size="40" width="2" />
     </div>
     <div v-else class="about-content viewer-prose">
       <h1>About This Experiment</h1>
@@ -137,7 +137,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import ProgressSpinner from 'primevue/progressspinner'
 import { fetchViewerConfig } from '@/lib/api'
 import { setViewerConfig } from '@/lib/state'
 
@@ -175,7 +174,7 @@ onMounted(async () => {
 }
 
 .about-content :deep(a) {
-  color: var(--p-primary-color);
+  color: rgb(var(--v-theme-primary));
   text-decoration: none;
 }
 

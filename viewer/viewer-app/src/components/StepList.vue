@@ -1,9 +1,9 @@
 <template>
   <div class="step-list">
-    <ProgressSpinner v-if="loading" style="width: 40px; height: 40px" />
-    <Message v-else-if="error" severity="error" :closable="false">
+    <v-progress-circular v-if="loading" indeterminate size="40" width="2" />
+    <v-alert v-else-if="error" type="error" variant="tonal" class="mb-0">
       {{ error }}
-    </Message>
+    </v-alert>
     <div v-else class="step-grid">
       <router-link
         v-for="step in steps"
@@ -12,15 +12,13 @@
         class="step-card"
       >
         <span class="step-card-label">{{ step.label }}</span>
-        <i class="pi pi-chevron-right step-card-arrow" aria-hidden="true"></i>
+        <v-icon size="small" icon="mdi-chevron-right" class="step-card-arrow" aria-hidden="true" />
       </router-link>
     </div>
   </div>
 </template>
 
 <script setup>
-import ProgressSpinner from 'primevue/progressspinner'
-import Message from 'primevue/message'
 import { computed } from 'vue'
 import { state } from '@/lib/state'
 
@@ -47,7 +45,7 @@ const error = computed(() => state.stepsError?.message || null)
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.25rem;
-  background: #fff;
+  background: rgb(var(--v-theme-surface));
   border: 2px solid #64748b;
   border-radius: 8px;
   color: #1e293b;
@@ -73,7 +71,6 @@ const error = computed(() => state.stepsError?.message || null)
 }
 
 .step-card-arrow {
-  font-size: 0.875rem;
   color: #475569;
 }
 

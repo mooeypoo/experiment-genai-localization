@@ -9,16 +9,15 @@
       referrerpolicy="no-referrer"
     />
     <div v-else class="step-frame-error">
-      <Message severity="warn" :closable="false">
+      <v-alert type="warning" variant="tonal">
         This step is not available. The step artifact may be missing or not yet built.
-      </Message>
+      </v-alert>
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
-import Message from 'primevue/message'
 
 const props = defineProps({
   stepId: { type: String, required: true },
@@ -37,7 +36,7 @@ const src = computed(() => {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  background: #fff;
+  background: rgb(var(--v-theme-surface));
   border: 2px solid #64748b;
   border-radius: 8px;
   overflow: hidden;

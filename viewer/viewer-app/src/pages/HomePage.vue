@@ -148,7 +148,7 @@ onMounted(async () => {
   margin: 0 0 1rem;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--p-text-color);
+  color: var(--viewer-text);
 }
 
 .step-list-wrapper {
@@ -156,7 +156,7 @@ onMounted(async () => {
 }
 
 .home-content :deep(a) {
-  color: var(--p-primary-color);
+  color: rgb(var(--v-theme-primary));
   text-decoration: none;
 }
 

@@ -2,26 +2,28 @@
   <div class="docs-panel">
     <div class="docs-panel-header">Documentation</div>
     <div class="docs-panel-scroll">
-      <TabView>
-        <TabPanel header="Notes">
-          <div class="viewer-prose" v-html="notesHtml"></div>
-          <p v-if="notesLoading" class="viewer-missing">Loading…</p>
-          <p v-else-if="notesError && !notesHtml" class="viewer-missing">{{ notesFallback }}</p>
-        </TabPanel>
-        <TabPanel header="Prompt">
-          <div class="viewer-prose" v-html="promptHtml"></div>
-          <p v-if="promptLoading" class="viewer-missing">Loading…</p>
-          <p v-else-if="promptError && !promptHtml" class="viewer-missing">{{ promptFallback }}</p>
-        </TabPanel>
-      </TabView>
+      <v-tabs v-model="tab" density="compact" class="docs-tabs">
+        <v-tab value="notes">Notes</v-tab>
+        <v-tab value="prompt">Prompt</v-tab>
+      </v-tabs>
+      <div class="docs-content-scroll">
+        <template v-if="tab === 'notes'">
+          <div class="viewer-prose pa-3" v-html="notesHtml" />
+          <p v-if="notesLoading" class="viewer-missing px-3">Loading…</p>
+          <p v-else-if="notesError && !notesHtml" class="viewer-missing px-3">{{ notesFallback }}</p>
+        </template>
+        <template v-else>
+          <div class="viewer-prose pa-3" v-html="promptHtml" />
+          <p v-if="promptLoading" class="viewer-missing px-3">Loading…</p>
+          <p v-else-if="promptError && !promptHtml" class="viewer-missing px-3">{{ promptFallback }}</p>
+        </template>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-import TabView from 'primevue/tabview'
-import TabPanel from 'primevue/tabpanel'
 import { fetchStepNotes, fetchStepPrompt } from '@/lib/api'
 
 const props = defineProps({
@@ -30,6 +32,7 @@ const props = defineProps({
   promptFallback: { type: String, default: 'No prompt available for this step.' },
 })
 
+const tab = ref('notes')
 const notesHtml = ref('')
 const promptHtml = ref('')
 const notesLoading = ref(false)
@@ -98,46 +101,34 @@ onMounted(load)
 .docs-panel-scroll {
   flex: 1;
   min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.docs-panel-scroll .docs-tabs {
+  flex-shrink: 0;
+  min-height: 40px;
+}
+
+/* Reduce tab bar padding so tab text isn't pushed right */
+.docs-panel :deep(.v-tab) {
+  padding-inline: 12px;
+  min-width: 0;
+  text-transform: none;
+}
+
+.docs-panel :deep(.v-tabs-slider-wrapper) {
+  margin-inline: 0;
+}
+
+.docs-content-scroll {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: #f1f5f9;
-  color: #1e293b;
-}
-
-.docs-panel :deep(.p-tabview) {
-  min-width: 0;
-  background: #f1f5f9;
-  color: #1e293b;
-}
-
-.docs-panel :deep(.p-tabview-nav),
-.docs-panel :deep([data-pc-section='nav']) {
-  flex-shrink: 0;
-  background: #f1f5f9;
-  color: #1e293b;
-  border-bottom: 1px solid var(--viewer-border);
-  border-left: none;
-  border-right: none;
-  border-top: none;
-}
-
-.docs-panel :deep(.p-tabview-nav .p-tabview-nav-link),
-.docs-panel :deep([data-pc-section='tab'] a) {
-  color: #1e293b !important;
-}
-
-.docs-panel :deep(.p-tabview-panels) {
-  min-width: 0;
-  padding: 0;
-  background: #f1f5f9;
-  color: #1e293b;
-}
-
-.docs-panel :deep(.p-tabview-panel) {
-  padding: 0;
-  min-width: 0;
-  background: #f1f5f9;
-  color: #1e293b;
 }
 
 .docs-panel :deep(.viewer-prose) {
