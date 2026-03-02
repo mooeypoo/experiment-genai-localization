@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
       - name: Install viewer-app dependencies
-        run: npm ci --prefix viewer-app
+        run: npm ci --prefix viewer/viewer-app
 
       - name: Build full static site
         env:
