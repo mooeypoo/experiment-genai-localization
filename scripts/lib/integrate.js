@@ -7,7 +7,7 @@
 
 import { execSync } from 'child_process'
 import { join } from 'path'
-import { existsSync, readdirSync } from 'fs'
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs'
 import { REPO_ROOT } from './env.js'
 import { listDir, exists, readText, copyDir, removeDir, ensureDir, writeText } from './fs.js'
 import { renderMarkdownFile, wrapProse } from './markdown.js'
@@ -75,6 +75,67 @@ function discoverFromManifest() {
   }
 }
 
+/** Get the tag description (first line of message) for an annotated tag; empty for lightweight tags. */
+function getTagDescription(stepId) {
+  try {
+    const out = execSync(`git tag -l --format='%(contents:subject)' ${stepId}`, { cwd: REPO_ROOT, encoding: 'utf-8' })
+    const desc = out.trim()
+    return desc || null
+  } catch {
+    return null
+  }
+}
+
+const VITE_CONFIG_NAMES = ['vite.config.js', 'vite.config.mjs', 'vite.config.ts']
+
+/**
+ * Force relative base in the worktree's Vite config so the build emits ./assets/ URLs.
+ * Patches base: '/' (or any absolute path) to base: './' so steps work when served from /step-XX/.
+ */
+function patchViteConfigBaseToRelative(worktreeDir) {
+  for (const name of VITE_CONFIG_NAMES) {
+    const configPath = join(worktreeDir, name)
+    if (!existsSync(configPath)) continue
+    let content = readFileSync(configPath, 'utf-8')
+    // base: '/' or base: "/" or base: '/path' -> base: './'
+    const next = content.replace(
+      /(\bbase\s*:\s*)(['"])(?:\/[^'"]*|)\2/g,
+      "$1$2./$2"
+    )
+    if (next !== content) {
+      writeFileSync(configPath, next, 'utf-8')
+    }
+    return
+  }
+}
+
+/**
+ * Fallback: rewrite any remaining /assets/ to ./assets/ in step index and asset files.
+ * Injects <base href="..."> so relative URLs resolve under the step path (optionally under pagesURL).
+ */
+function normalizeStepIndexAssetPaths(stepOutDir, stepId, pagesURL = '') {
+  const indexPath = join(stepOutDir, 'index.html')
+  if (existsSync(indexPath)) {
+    let html = readText(indexPath)
+    html = html.replace(/(\b(?:src|href)\s*=\s*["'])\/assets\//g, '$1./assets/')
+    const pathPrefix = pagesURL ? `/${String(pagesURL).replace(/^\/+|\/+$/g, '')}/` : '/'
+    const baseHref = `${pathPrefix}${stepId}/`
+    if (!/<base\s/i.test(html)) {
+      html = html.replace(/(<head[^>]*>)/i, `$1\n    <base href="${baseHref}">`)
+    }
+    writeText(indexPath, html)
+  }
+  const assetsDir = join(stepOutDir, 'assets')
+  if (!existsSync(assetsDir)) return
+  for (const name of readdirSync(assetsDir)) {
+    if (!/\.(js|css|mjs)$/.test(name)) continue
+    const filePath = join(assetsDir, name)
+    let content = readFileSync(filePath, 'utf-8')
+    const next = content.replace(/\/assets\//g, './assets/')
+    if (next !== content) writeFileSync(filePath, next, 'utf-8')
+  }
+}
+
 /**
  * Build one step and write to siteDir/step-XX/.
  * Returns { id, num, title, tag, hasNotes, hasPrompt } for steps.json.
@@ -117,6 +178,8 @@ export function buildStep(stepId, siteDir, options = {}) {
 
   if (!built) return null
 
+  normalizeStepIndexAssetPaths(stepOutDir, stepId, options.pagesURL ?? '')
+
   return {
     id: stepId,
     num,
@@ -141,7 +204,10 @@ function buildStepFromTag(stepId, stepOutDir, options = {}) {
     const promptPathA = join(worktree, 'docs', 'prompts', `step-${num}.md`)
     const promptPathB = join(worktree, 'docs', 'prompts', `${num}.md`)
 
-    let title = `Step ${num.padStart(2, '0')}`
+    const useTagDescription = !!options.stepNamesFromTagDescriptions
+    const tagDesc = useTagDescription ? getTagDescription(stepId) : null
+    const stepLabel = `Step ${num.padStart(2, '0')}`
+    let title = tagDesc ? `${stepLabel}: ${tagDesc}` : stepLabel
     let hasNotes = false
     let hasPrompt = false
 
@@ -151,8 +217,9 @@ function buildStepFromTag(stepId, stepOutDir, options = {}) {
       try {
         execSync('npm ci', { cwd: worktree, stdio: 'pipe' })
       } catch {}
-      const base = options.basePath ? options.basePath.replace('${step}', stepId) : './'
-      execSync(`npx vite build --base="${base}" --outDir="${stepOutDir}"`, { cwd: worktree, stdio: 'pipe' })
+      // Force relative base in step's Vite config so build emits ./assets/ (works under /step-XX/)
+      patchViteConfigBaseToRelative(worktree)
+      execSync(`npx vite build --base="./" --outDir="${stepOutDir}"`, { cwd: worktree, stdio: 'pipe' })
     } else if (existsSync(distPath)) {
       copyDir(distPath, stepOutDir)
     }
@@ -162,10 +229,12 @@ function buildStepFromTag(stepId, stepOutDir, options = {}) {
       if (html) {
         writeText(join(stepOutDir, 'notes.html'), wrapProse(html))
         hasNotes = true
-        const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
-        if (h1 && h1[1]) {
-          const raw = h1[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').trim()
-          if (raw) title = raw
+        if (!useTagDescription) {
+          const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)
+          if (h1 && h1[1]) {
+            const raw = h1[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').trim()
+            if (raw) title = raw
+          }
         }
       }
     }
@@ -201,11 +270,26 @@ function buildStepFromFolder(stepId, stepOutDir) {
 
   const pkgPath = join(stepDir, 'package.json')
   const distPath = join(stepDir, 'dist')
+  const hasViteConfig =
+    existsSync(join(stepDir, 'vite.config.js')) ||
+    existsSync(join(stepDir, 'vite.config.mjs')) ||
+    existsSync(join(stepDir, 'vite.config.ts'))
   if (existsSync(pkgPath)) {
-    try {
-      execSync('npm run build', { cwd: stepDir, stdio: 'pipe' })
-    } catch {}
-    if (existsSync(distPath)) copyDir(distPath, stepOutDir)
+    if (hasViteConfig) {
+      try {
+        execSync(`npx vite build --base="./" --outDir="${stepOutDir}"`, { cwd: stepDir, stdio: 'pipe' })
+      } catch {
+        try {
+          execSync('npm run build', { cwd: stepDir, stdio: 'pipe' })
+        } catch {}
+        if (existsSync(distPath)) copyDir(distPath, stepOutDir)
+      }
+    } else {
+      try {
+        execSync('npm run build', { cwd: stepDir, stdio: 'pipe' })
+      } catch {}
+      if (existsSync(distPath)) copyDir(distPath, stepOutDir)
+    }
   } else if (existsSync(distPath)) {
     copyDir(distPath, stepOutDir)
   } else {

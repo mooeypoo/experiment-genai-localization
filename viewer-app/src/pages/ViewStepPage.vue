@@ -34,6 +34,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import StepFrame from '@/components/StepFrame.vue'
 import { normalizeStepId } from '@/lib/stepId'
+import { stepPageUrl } from '@/lib/stepPageUrl'
 import { state } from '@/lib/state'
 import { fetchSteps } from '@/lib/api'
 import { setSteps } from '@/lib/state'
@@ -60,7 +61,7 @@ function goToStepById(id) {
 async function checkStepExists() {
   if (!normalizedId.value) return
   try {
-    const res = await fetch(`./${normalizedId.value}/index.html`, { method: 'head' })
+    const res = await fetch(stepPageUrl(normalizedId.value))
     stepExists.value = res.ok
   } catch {
     stepExists.value = false

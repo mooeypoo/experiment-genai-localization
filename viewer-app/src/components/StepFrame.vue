@@ -18,6 +18,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { stepPageUrl } from '@/lib/stepPageUrl'
 
 const props = defineProps({
   stepId: { type: String, required: true },
@@ -26,7 +27,7 @@ const props = defineProps({
 
 const src = computed(() => {
   if (!props.stepId || !props.stepExists) return null
-  return `./${props.stepId}/index.html`
+  return stepPageUrl(props.stepId)
 })
 </script>
 
