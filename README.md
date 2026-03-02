@@ -31,69 +31,58 @@ any static hosting provider with no server-side requirements.
 
 ---
 
-## GitHub Pages demo
+## Step viewer and build pipeline
+
+A **standalone viewer** and build pipeline live under `viewer/`. The viewer is a Vue 3 app that lists steps, shows each step’s app in an iframe, and displays docs (notes/prompt) in a side panel. It can be extracted into its own repo and vendored back via git subtree.
+
+### Build and preview
+
+```bash
+npm run build:pages    # generates site/ at repo root
+npm run preview:pages  # serves site/ (e.g. npx serve site)
+```
+
+After `build:pages`, open the URL from `preview:pages` (e.g. `http://localhost:3000`). Use **hash routing**: `/#/` (home), `/#/about`, `/#/view/step-01`.
+
+### Integrated vs standalone mode
+
+- **Integrated mode** (this repo with step sources): The build script discovers steps via git tags (`step-01`, `step-02`, …) or `step-XX` folders in the repo root. It builds each step’s app (worktree + `vite build` for tags, or build from step folders), renders `docs/agent-notes/XX.md` and `docs/prompts/step-XX.md` (or `XX.md`) to HTML, and emits `site/steps.json` and `site/step-XX/`.
+- **Standalone mode** (viewer extracted, no step sources): If no steps are found, the script generates **mock** step artifacts (`site/step-01/`, `site/step-02/`) and a mock `steps.json` so you can run and test the viewer in isolation.
+
+### Viewer layout
+
+- **Home** (`/#/`): Fetches `./steps.json`, shows a list of steps; each link goes to `/#/view/step-XX`.
+- **Step view** (`/#/view/:step`): Iframe `src` is `./<stepId>/` (relative). Docs panel loads `./<stepId>/notes.html` and `./<stepId>/prompt.html` (fallback if missing).
+- **About** (`/#/about`): Fetches `./viewer-config.json` and shows site title, assistant name, repo URL, etc.
+
+All fetches and iframe URLs use **relative paths** so the site works under GitHub Pages subpaths.
+
+### Optional: run viewer app in dev
+
+```bash
+npm run dev:viewer   # runs Vite dev server for viewer/viewer-app only
+```
+
+Integrated testing should use the **built** `site/` served statically (`npm run preview:pages`), not the dev server.
+
+---
+
+## GitHub Pages
 
 When this repository is pushed to GitHub and GitHub Pages is enabled with
 **GitHub Actions** as the source, the workflow at
-`.github/workflows/pages.yml` automatically builds and deploys a viewer site.
+`.github/workflows/pages.yml` builds each step's Vue app and deploys them.
 
-### What the viewer provides
-
-- **Global index** (`/`) — lists every available step with a link to try it.
-- **Global about page** (`/about/`) — explains the project, architecture, and
-  where docs live.
-- **Per-step shell** (`/step-XX/`) — a persistent top bar and sidebar that
-  wrap each step's Vue app in an `<iframe>`. The sidebar shows:
-  - **Agent notes** — the AI's reasoning for that step (rendered from
-    `docs/agent-notes/XX.md`).
-  - **Prompt** — the original instructions given to the agent (rendered from
-    `docs/prompts/step-XX.md` or `docs/prompts/XX.md`).
-
-### How steps are discovered
-
-The workflow runs `git tag -l 'step-*'` and processes the results in
-version-sorted order. A `steps.json` manifest is generated at the site root;
-the shell dropdown is populated from that file at runtime.
-
-### How the build works
+### How it works
 
 1. All `step-*` tags are discovered.
 2. Each tag is checked out into a temporary `git worktree`.
-3. The Vue app is built with Vite, passing the correct `--base` path so
-   assets resolve at `/<repo>/step-XX/app/`.
-4. `docs/agent-notes/XX.md` is rendered to `notes.html`.
-5. `docs/prompts/step-XX.md` (or `docs/prompts/XX.md`) is rendered to
-   `prompt.html`.
-6. A global shell wrapper `index.html` is generated for each step.
-7. The global `index.html`, `about/index.html`, and `steps.json` are
-   generated.
-8. Everything is deployed via `actions/deploy-pages`.
+3. The Vue app is built with Vite, with assets under `/<repo>/step-XX/app/`.
+4. The built output is deployed via `actions/deploy-pages`.
 
-### Local preview of the Pages shell
+Each step is available at `/<repo>/step-XX/app/` (e.g. `/experiment-genai-steps-cursor/step-01/app/`).
 
-You can build the same shell structure locally for review:
-
-```bash
-# From the repo root
-npm run build:pages-local
-
-# Then, in another terminal:
-npx serve _site
-```
-
-This will:
-
-- Discover all `step-*` tags.
-- Build each step's Vue app into `_site/step-XX/app/` with a local-friendly
-  base path (`/step-XX/app/`).
-- Render `notes.html` and `prompt.html` per step.
-- Generate the global index, about page, and step shell wrappers.
-
-Open the URL printed by `serve` (usually `http://localhost:3000`) and browse:
-
-- `/` — global index
-- `/about/` — about page
-- `/step-01/`, `/step-02/`, … — shell + app for each step
+To deploy the **viewer** to Pages, point the workflow at the output of `npm run build:pages` (the `site/` folder) instead of the current step-app-only build.
 
 ### Enabling GitHub Pages
 
@@ -112,23 +101,20 @@ In your repository settings:
   workflows/
     pages.yml         # CI/CD: build + deploy to GitHub Pages
 
-scripts/
-  package.json        # Dependencies for build scripts (marked)
-  render-md.mjs       # Renders a Markdown file to an HTML fragment
-  generate-site.mjs   # Generates global pages, steps.json, and step shells
+viewer/               # Standalone viewer (can be extracted to its own repo)
+  viewer-app/         # Vue 3 + Vite viewer app (PrimeVue, hash routing)
+  scripts/            # Build script and lib (build-pages.mjs, lib/*.js)
+  templates/          # Fallback HTML for missing notes/prompt
 
-shell/
-  shell.css           # Global styles for the Pages viewer shell
-  shell.js            # Shell interactivity (dropdown, sidebar, copy-link)
+viewer.config.json    # Viewer config (site title, footer, etc.); created if missing
+site/                 # Generated static output (do not commit)
 
-src/                  # Vue 3 application source
+src/                  # Vue 3 application source (experiment app)
   data/
-    seed.json         # Seed data (users, post, comments)
-    store.js          # In-memory reactive data layer
-  components/         # Reusable Vue components
-  views/              # Page-level Vue components
-  i18n/               # Lightweight i18n module + locale files
-  router/             # vue-router configuration
+  components/
+  views/
+  i18n/
+  router/
   main.js
   App.vue
 
@@ -147,6 +133,3 @@ Each major step is tagged as `step-XX` (zero-padded, e.g. `step-01`):
 git checkout step-03   # see the codebase at step 03
 git tag -l 'step-*'    # list all step tags
 ```
-
-The shell viewer is **not** tagged as a step — it lives on `main` and is
-considered global/latest infrastructure.
