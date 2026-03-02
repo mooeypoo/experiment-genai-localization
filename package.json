@@ -8,8 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:pages": "node viewer/scripts/build-pages.mjs",
-    "preview:pages": "npx serve site",
-    "dev:viewer": "npm --prefix viewer/viewer-app run dev"
+    "preview:pages": "npx serve viewer/_site"
   },
   "dependencies": {
     "vue": "^3.5",

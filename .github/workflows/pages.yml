@@ -37,6 +37,8 @@ jobs:
         working-directory: viewer/viewer-app
 
       - name: Build pages (viewer app + steps + config)
+        env:
+          VIEWER_PAGES_URL: /${{ github.event.repository.name }}
         run: npm run build:pages
 
       - name: Upload Pages artifact
